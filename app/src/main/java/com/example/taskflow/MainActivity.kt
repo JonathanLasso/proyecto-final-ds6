@@ -1,5 +1,6 @@
 package com.example.taskflow
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.taskflow.databinding.ActivityMainBinding
@@ -19,6 +20,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         obtenerDatosDelClima()
+        pantallaDeAgregarTarea()
+    }
+
+    private fun pantallaDeAgregarTarea() {
+        val btnAgregarTarea = binding.AgregarTarea
+        btnAgregarTarea.setOnClickListener {
+            val intent = Intent(
+                this,
+                CrearTarea::class.java
+            )
+            startActivity(intent)
+        }
     }
 
     private fun obtenerDatosDelClima() {
@@ -28,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val apiService = retrofit.create(ClimaApi::class.java)
-        val call = apiService.obtenerElTiempoActual("Panama City", "588a8259c8ffb569bdd98d4db4d50e3c", "metric")
+        val call = apiService.obtenerElTiempoActual("Ciudad de Panamá", "588a8259c8ffb569bdd98d4db4d50e3c", "metric")
 
         call.enqueue(object : retrofit2.Callback<ClimaModelo> {
             override fun onResponse(call: Call<ClimaModelo>, response: Response<ClimaModelo>) {
@@ -38,13 +51,12 @@ class MainActivity : AppCompatActivity() {
                     // 4. Cambiar el texto usando ViewBinding de forma segura
                     weatherData?.let { weather ->
                         binding.tvCityName.text = weather.nombre
-                        // OpenWeather devuelve Kelvin por defecto; puedes formatearlo si lo deseas
+
                         binding.tvTemperature.text = "${weather.principal.temperatura} °C"
                         binding.tvHumidity.text = "Humedad: ${weather.principal.humedad}%"
-                        // 2. Extraer el código del icono (ej: "10d") de forma segura
+
                         val codigoIcono = weather.clima.firstOrNull()?.icono
 
-                        // 3. Si el código existe, construimos la URL y dejamos que Glide haga la magia
                         if (codigoIcono != null) {
                             val urlIcono = "https://openweathermap.org/img/wn/$codigoIcono@2x.png"
 
