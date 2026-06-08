@@ -1,17 +1,19 @@
 package com.example.taskflow
 
+import com.google.gson.annotations.SerializedName
+
 data class ClimaModelo(
-    val nombre: String,
-    val principal: InformacionPrincipal,
-    val clima: List<ClimaDescripcion>
+    @SerializedName("name") val nombre: String,
+    @SerializedName("main") val principal: InformacionPrincipal,
+    @SerializedName("weather") val clima: List<ClimaDescripcion>
 )
 
 data class InformacionPrincipal(
-    val temperatura: Double,
-    val humedad: Int
+    @SerializedName("temp") val temperatura: Double,
+    @SerializedName("humidity") val humedad: Int
 )
 
 data class ClimaDescripcion(
-    val descripcion: String,
-    val icono: String
+    @SerializedName("description") val descripcion: String,
+    @SerializedName("icon") val icono: String
 )

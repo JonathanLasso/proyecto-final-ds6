@@ -23,12 +23,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun obtenerDatosDelClima() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/data/3.0/")
+            .baseUrl("https://api.openweathermap.org/data/2.5/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         val apiService = retrofit.create(ClimaApi::class.java)
-        val call = apiService.obtenerElTiempoActual("Panama City", "588a8259c8ffb569bdd98d4db4d50e3c")
+        val call = apiService.obtenerElTiempoActual("Panama City", "588a8259c8ffb569bdd98d4db4d50e3c", "metric")
 
         call.enqueue(object : retrofit2.Callback<ClimaModelo> {
             override fun onResponse(call: Call<ClimaModelo>, response: Response<ClimaModelo>) {
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                     weatherData?.let { weather ->
                         binding.tvCityName.text = weather.nombre
                         // OpenWeather devuelve Kelvin por defecto; puedes formatearlo si lo deseas
-                        binding.tvTemperature.text = "${weather.principal.temperatura} °K"
+                        binding.tvTemperature.text = "${weather.principal.temperatura} °C"
                         binding.tvHumidity.text = "Humedad: ${weather.principal.humedad}%"
                         // 2. Extraer el código del icono (ej: "10d") de forma segura
                         val codigoIcono = weather.clima.firstOrNull()?.icono
