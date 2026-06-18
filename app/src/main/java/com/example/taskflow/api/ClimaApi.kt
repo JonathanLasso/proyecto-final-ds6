@@ -1,4 +1,4 @@
-package com.example.taskflow
+package com.example.taskflow.api
 
 import retrofit2.Call
 import retrofit2.http.GET

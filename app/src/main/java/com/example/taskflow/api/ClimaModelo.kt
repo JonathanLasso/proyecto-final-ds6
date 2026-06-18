@@ -1,4 +1,4 @@
-package com.example.taskflow
+package com.example.taskflow.api
 
 import com.google.gson.annotations.SerializedName
 

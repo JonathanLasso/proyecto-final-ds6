@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.taskflow.databinding.ActivityMainBinding
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.example.taskflow.api.ClimaApi
+import com.example.taskflow.api.ClimaModelo
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
