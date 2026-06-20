@@ -8,6 +8,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.taskflow.dataBase.tablas.CategoriasEntity
 import com.example.taskflow.dataBase.tablas.TareaEntity
 import com.example.taskflow.dataBase.daos.CategoriasDao
+import com.example.taskflow.dataBase.daos.TareasDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 
 abstract class TareaDb : RoomDatabase() {
     abstract fun categoriasDao(): CategoriasDao
+    abstract fun tareasDao(): TareasDao
 
     companion object {
         @Volatile

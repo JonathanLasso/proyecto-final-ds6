@@ -2,12 +2,18 @@ package com.example.taskflow
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.example.taskflow.databinding.ActivityMainBinding
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.taskflow.adapter.TareasAdapter
 import com.example.taskflow.api.ClimaApi
 import com.example.taskflow.api.ClimaModelo
+import com.example.taskflow.dataBase.app.TareaApp
+import com.example.taskflow.databinding.ActivityMainBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -16,13 +22,35 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val database by lazy { (application as TareaApp).database }
+    private lateinit var tareasAdapter: TareasAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         obtenerDatosDelClima()
+        configurarLista()
+        obtenerTareas()
         pantallaDeAgregarTarea()
+    }
+
+    private fun configurarLista() {
+        tareasAdapter = TareasAdapter()
+        binding.rvTareas.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = tareasAdapter
+        }
+    }
+
+    private fun obtenerTareas() {
+        // Usamos lifecycleScope ya que obtenerTodasLasTareas() devuelve un Flow reactivo
+        lifecycleScope.launch {
+            database.tareasDao().obtenerTodasLasTareas().collectLatest { listaDeTareas ->
+                // Cada vez que la tabla cambie (inserciones, eliminaciones) este bloque se ejecuta solo
+                tareasAdapter.actualizarLista(listaDeTareas)
+            }
+        }
     }
 
     private fun pantallaDeAgregarTarea() {

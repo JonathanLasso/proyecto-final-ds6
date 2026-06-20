@@ -91,13 +91,13 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!--<androidx.recyclerview.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvTareas"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:scrollbars="vertical"
-            tools:listitem="@layout/item_tarea"--> />
+            tools:listitem="@layout/item_tarea" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
