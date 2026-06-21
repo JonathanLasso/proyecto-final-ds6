@@ -4,6 +4,7 @@ import androidx.room.*
 import com.example.taskflow.dataBase.tablas.TareaEntity
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface TareasDao {
 
     //Pantalla de inicio

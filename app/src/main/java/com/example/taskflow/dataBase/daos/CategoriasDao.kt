@@ -5,10 +5,11 @@ import com.example.taskflow.dataBase.tablas.CategoriasConContador
 import com.example.taskflow.dataBase.tablas.CategoriasEntity
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface CategoriasDao {
     //Pantalla para ver las categorias
     @Query("""
-        SELECT c.id, c.nombre, COUNT(t.id) AS cantidad_Tareas
+        SELECT c.id, c.nombre, COUNT(t.id) AS cantidad_tareas
         FROM categorias c
         LEFT JOIN tareas t ON c.id = t.categoria_id
         GROUP BY c.id

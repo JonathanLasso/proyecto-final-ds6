@@ -11,10 +11,7 @@
         android:id="@+id/btn_salir_flecha"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_titulo_pantalla"
-        app:layout_bottom_toBottomOf="@id/tv_titulo_pantalla" />
+        android:src="@android:drawable/ic_menu_close_clear_cancel"/>
 
     <TextView
         android:id="@+id/tv_titulo_pantalla"
@@ -22,10 +19,7 @@
         android:layout_height="wrap_content"
         android:text="Nueva Tarea"
         android:textSize="24sp"
-        android:layout_gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_gravity="center"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tv_titulo"
@@ -33,8 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:hint="Titulo"
-        app:boxBackgroundColor="@android:color/transparent"
-        app:layout_constraintTop_toBottomOf="@id/tv_titulo_pantalla">
+        app:boxBackgroundColor="@android:color/transparent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_titulo"
@@ -51,8 +44,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:hintEnabled="false"
-        app:boxBackgroundColor="@android:color/transparent"
-        app:layout_constraintTop_toBottomOf="@id/til_titulo">
+
+        app:boxBackgroundColor="@android:color/transparent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_descripcion"
@@ -71,9 +64,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:boxBackgroundColor="@android:color/transparent"
-        app:arrowMaterialShapeConstraintEnabled="true"
-        app:layout_constraintTop_toBottomOf="@id/til_descripcion">
+        app:boxBackgroundColor="@android:color/transparent">
 
         <AutoCompleteTextView
             android:id="@+id/et_prioridad"
@@ -91,8 +82,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        app:boxBackgroundColor="@android:color/transparent"
-        app:layout_constraintTop_toBottomOf="@id/til_prioridad">
+        app:boxBackgroundColor="@android:color/transparent">
 
         <AutoCompleteTextView
             android:id="@+id/et_categoria"
