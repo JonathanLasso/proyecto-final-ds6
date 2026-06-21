@@ -10,6 +10,9 @@ interface TareasDao {
     //Pantalla de inicio
     @Query("SELECT * FROM tareas")
     fun obtenerTodasLasTareas(): Flow<List<TareaEntity>>
+    //Consulta para obtener por id
+    @Query("SELECT * FROM tareas WHERE id = :id LIMIT 1")
+    suspend fun obtenerTareaPorId(id: Int): TareaEntity?
 
     //Pantalla de insertar
     @Insert(onConflict = OnConflictStrategy.REPLACE)

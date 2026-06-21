@@ -103,33 +103,33 @@ class CrearTarea : AppCompatActivity() {
             if (titulo.isEmpty()) {
                 Toast.makeText(this, "Por favor, el titulo es obligatorio", Toast.LENGTH_SHORT).show()
             }
-
-            if (idCategoriaSeleccionada == null) {
+            else if (idCategoriaSeleccionada == null) {
                 Toast.makeText(this, "Por favor, selecciona una categoría válida", Toast.LENGTH_SHORT).show()
             }
 
-            if (prioridad.isEmpty()) {
+            else if (prioridad.isEmpty()) {
                 Toast.makeText(this, "Por favor, selecciona una prioridad", Toast.LENGTH_SHORT).show()
             }
+            else {
+                // 4. Construcción balanceada del objeto Entity con los tipos correctos
+                val nuevaTarea = TareaEntity(
+                    titulo = titulo,
+                    descripcion = descripcion,
+                    prioridad = prioridad,
+                    completada = false,
+                    fechaLimite = fechaSeleccionadaMilis, // Pasa el Long correctamente
+                    categoria_id = idCategoriaSeleccionada!! // Pasa el Int correctamente
+                )
 
-            // 4. Construcción balanceada del objeto Entity con los tipos correctos
-            val nuevaTarea = TareaEntity(
-                titulo = titulo,
-                descripcion = descripcion,
-                prioridad = prioridad,
-                completada = false,
-                fechaLimite = fechaSeleccionadaMilis, // Pasa el Long correctamente
-                categoria_id = idCategoriaSeleccionada!! // Pasa el Int correctamente
-            )
-
-            // 5. Inserción mediante corrutinas en el hilo correcto
-            lifecycleScope.launch {
-                try {
-                    database.tareasDao().insertarTarea(nuevaTarea)
-                    Toast.makeText(this@CrearTarea, "Tarea guardada con éxito", Toast.LENGTH_SHORT).show()
-                    finish() // Cierra el formulario y vuelve al menú principal
-                } catch (e: Exception) {
-                    Toast.makeText(this@CrearTarea, "Error al guardar tarea: ${e.message}", Toast.LENGTH_LONG).show()
+                // 5. Inserción mediante corrutinas en el hilo correcto
+                lifecycleScope.launch {
+                    try {
+                        database.tareasDao().insertarTarea(nuevaTarea)
+                        Toast.makeText(this@CrearTarea, "Tarea guardada con éxito", Toast.LENGTH_SHORT).show()
+                        finish() // Cierra el formulario y vuelve al menú principal
+                    } catch (e: Exception) {
+                        Toast.makeText(this@CrearTarea, "Error al guardar tarea: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }

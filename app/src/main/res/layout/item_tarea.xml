@@ -40,9 +40,19 @@
             android:id="@+id/tvItemPrioridad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
             android:text="Alta"
             android:textStyle="bold"
             android:textColor="#E74C3C"
+            app:layout_constraintEnd_toStartOf="@id/ivEliminarTarea"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivEliminarTarea"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="Eliminar Tarea"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
