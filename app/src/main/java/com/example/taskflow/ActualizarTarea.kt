@@ -1,6 +1,7 @@
 package com.example.taskflow
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.os.Bundle
@@ -37,16 +38,8 @@ class ActualizarTarea : AppCompatActivity() {
         // 1. Inicializar ViewBinding
         binding = ActivityActualizarTareaBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         // 2. Recuperar el ID enviado desde MainActivity
         tareaId = intent.getIntExtra("TAREA_ID", -1)
-
         if (tareaId == -1) {
             Toast.makeText(this, "Error al cargar la tarea", Toast.LENGTH_SHORT).show()
             finish()
@@ -62,7 +55,8 @@ class ActualizarTarea : AppCompatActivity() {
         configurarBotonActualizar()
 
         // Botón salir (puedes adaptarlo a tus IDs de flechas o botones de salida)
-        binding.btnSalir?.setOnClickListener { finish() }
+        regresarAlMenuConBoton()
+        regresarAlMenuConFlecha()
     }
 
     private fun configurarDropdownPrioridad() {
@@ -96,15 +90,37 @@ class ActualizarTarea : AppCompatActivity() {
 
     private fun cargarDatosDeTarea() {
         lifecycleScope.launch {
-            val tarea = withContext(Dispatchers.IO) {
-                database.tareasDao().obtenerTareaPorId(tareaId)
+            // 1. Obtener la tarea y la lista de categorías en paralelo/hilo IO
+            val (tarea, listaCategorias) = withContext(Dispatchers.IO) {
+                val t = database.tareasDao().obtenerTareaPorId(tareaId)
+                val c = database.categoriasDao().obtenerTodasLasCategorias()
+                Pair(t, c)
             }
 
             tarea?.let { t ->
+                // Guardamos los estados iniciales
                 idCategoriaOriginal = t.categoria_id
                 estaCompletada = t.completada
                 fechaSeleccionadaMilis = t.fechaLimite
 
+                // 2. Configurar el adaptador de categorías en el Dropdown
+                val nombresCategorias = listaCategorias.map { it.nombre }
+                val adapterCategorias = ArrayAdapter(this@ActualizarTarea, android.R.layout.simple_dropdown_item_1line, nombresCategorias)
+                binding.etCategoria.setAdapter(adapterCategorias)
+
+                // 3. Buscar el nombre de la categoría actual de la tarea para preseleccionarla
+                val categoriaActual = listaCategorias.find { it.id == t.categoria_id }
+                categoriaActual?.let {
+                    binding.etCategoria.setText(it.nombre, false)
+                }
+
+                // 4. Escuchar si el usuario cambia la categoría en el formulario
+                binding.etCategoria.setOnItemClickListener { _, _, position, _ ->
+                    val categoriaSeleccionada = listaCategorias[position]
+                    idCategoriaOriginal = categoriaSeleccionada.id // Actualizamos con el nuevo ID
+                }
+
+                // 5. Llenar el resto de los campos de texto
                 binding.etTitulo.setText(t.titulo)
                 binding.etDescripcion.setText(t.descripcion)
                 binding.etPrioridad.setText(t.prioridad, false)
@@ -150,6 +166,28 @@ class ActualizarTarea : AppCompatActivity() {
                     Toast.makeText(this@ActualizarTarea, "Error al actualizar: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
+        }
+    }
+
+    private fun regresarAlMenuConFlecha(){
+        binding.btnSalirFlecha.setOnClickListener {
+            val intent = Intent(
+                this,
+                MainActivity::class.java
+            )
+            finish()
+            startActivity(intent)
+        }
+    }
+
+    private fun regresarAlMenuConBoton(){
+        binding.btnSalir.setOnClickListener {
+            val intent = Intent(
+                this,
+                MainActivity::class.java
+            )
+            finish()
+            startActivity(intent)
         }
     }
 }
