@@ -6,6 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".MainActivity">
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -24,10 +25,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TaskFlow"
+                android:textColor="#102027"
                 android:textSize="32sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/btnMenu"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_more_vert_dark"
+                app:layout_constraintBottom_toBottomOf="@id/tituloApp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tituloApp"
+                android:contentDescription="Opciones" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

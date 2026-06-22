@@ -34,6 +34,29 @@ class MainActivity : AppCompatActivity() {
         configurarLista()
         obtenerTareas()
         pantallaDeAgregarTarea()
+        configurarMenu()
+    }
+
+    private fun configurarMenu() {
+        binding.btnMenu.setOnClickListener { view ->
+            val popup = androidx.appcompat.widget.PopupMenu(this, view)
+            popup.menuInflater.inflate(R.menu.main_menu, popup.menu)
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.menu_categorias -> {
+                        val intent = Intent(this, CategoriaActivity::class.java)
+                        startActivity(intent)
+                        true
+                    }
+                    R.id.menu_estadisticas -> {
+                        Toast.makeText(this, "Próximamente: Estadísticas", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
+        }
     }
 
     private fun configurarLista() {

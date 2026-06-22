@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TaskFlow">
         <activity
+            android:name=".CategoriaActivity"
+            android:exported="false" />
+        <activity
             android:name=".ActualizarTarea"
             android:exported="false" />
         <activity
