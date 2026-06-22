@@ -18,7 +18,7 @@ class CategoriaActivity : AppCompatActivity() {
         binding = ActivityCategoriaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnRegresar.setOnClickListener {
+        binding.btnVolver.setOnClickListener {
             finish()
         }
 
