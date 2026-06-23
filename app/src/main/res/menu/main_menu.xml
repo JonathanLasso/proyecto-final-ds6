@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
         android:id="@+id/menu_categorias"
         android:icon="@drawable/ic_list"
-        android:title="Categorías" />
+        android:title="Categorías">
+
+        <menu>
+            <item
+                android:id="@+id/filtro_todos"
+                android:title="Todos" />
+            <item
+                android:id="@+id/filtro_personal"
+                android:title="Personal" />
+            <item
+                android:id="@+id/filtro_trabajo"
+                android:title="Trabajo" />
+            <item
+                android:id="@+id/filtro_estudio"
+                android:title="Estudio" />
+            <item
+                android:id="@+id/filtro_compras"
+                android:title="Compras" />
+        </menu>
+    </item>
+
     <item
         android:id="@+id/menu_estadisticas"
         android:icon="@drawable/ic_stats"

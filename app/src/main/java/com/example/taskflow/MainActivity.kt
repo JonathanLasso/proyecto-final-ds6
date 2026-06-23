@@ -46,12 +46,37 @@ class MainActivity : AppCompatActivity() {
             popup.menuInflater.inflate(R.menu.main_menu, popup.menu)
 
             popup.setOnMenuItemClickListener { item ->
+                val dao = database.tareasDao()
+
                 when (item.itemId) {
-                    R.id.menu_categorias -> {
-                        // En lugar de ir directo a otra Activity, abrimos las opciones de ordenamiento/filtro
-                        mostrarOpcionesDelFiltro(view)
+                    // IDs del submenú de Categorías
+                    R.id.filtro_todos -> {
+                        obtenerTareas(dao.obtenerTodasLasTareas())
+                        Toast.makeText(this, "Mostrando todas las tareas", Toast.LENGTH_SHORT).show()
                         true
                     }
+                    R.id.filtro_personal -> {
+                        obtenerTareas(dao.obtenerTareasPersonal())
+                        Toast.makeText(this, "Filtrado: Personal", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    R.id.filtro_trabajo -> {
+                        obtenerTareas(dao.obtenerTareasTrabajo())
+                        Toast.makeText(this, "Filtrado: Trabajo", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    R.id.filtro_estudio -> {
+                        obtenerTareas(dao.obtenerTareasEstudios())
+                        Toast.makeText(this, "Filtrado: Estudio", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    R.id.filtro_compras -> {
+                        obtenerTareas(dao.obtenerTareasCompras())
+                        Toast.makeText(this, "Filtrado: Compras", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+
+                    // Opción principal de Estadísticas
                     R.id.menu_estadisticas -> {
                         Toast.makeText(this, "Próximamente: Estadísticas", Toast.LENGTH_SHORT).show()
                         true
@@ -61,46 +86,6 @@ class MainActivity : AppCompatActivity() {
             }
             popup.show()
         }
-    }
-
-    /**
-     * Despliega un segundo menú flotante con los criterios específicos de ordenamiento
-     */
-    private fun mostrarOpcionesDelFiltro(anchorView: View) {
-        val filtroPopup = androidx.appcompat.widget.PopupMenu(this, anchorView)
-
-        filtroPopup.menu.add(0, 1, 0, "Personal")
-        filtroPopup.menu.add(0, 2, 1, "Trabajo")
-        filtroPopup.menu.add(0, 3, 2, "Estudio")
-        filtroPopup.menu.add(0, 4, 3, "Compras")
-
-        filtroPopup.setOnMenuItemClickListener { filtroItem ->
-            val dao = database.tareasDao()
-            when (filtroItem.itemId) {
-                1 -> {
-                    obtenerTareas(dao.obtenerTareasPersonal())
-                    Toast.makeText(this, "Ordenado por personal", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                2 -> {
-                    obtenerTareas(dao.obtenerTareasTrabajo())
-                    Toast.makeText(this, "Ordenado por trabajo", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                3 -> {
-                    obtenerTareas(dao.obtenerTareasEstudios())
-                    Toast.makeText(this, "Filtrado: estudio", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                4 -> {
-                    obtenerTareas(dao.obtenerTareasCompras())
-                    Toast.makeText(this, "Filtrado: compras", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                else -> false
-            }
-        }
-        filtroPopup.show()
     }
 
     private fun configurarLista() {
