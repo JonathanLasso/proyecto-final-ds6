@@ -98,41 +98,46 @@ class CrearTarea : AppCompatActivity() {
             val descripcion = binding.etDescripcion.text.toString().trim()
             val prioridad = binding.etPrioridad.text.toString().trim()
 
-            // Validaciones rigurosas de la interfaz
+            // 1. Validar Título
             if (titulo.isEmpty()) {
-                Toast.makeText(this, "Por favor, el titulo es obligatorio", Toast.LENGTH_SHORT).show()
-            }
-            else if (idCategoriaSeleccionada == null) {
-                Toast.makeText(this, "Por favor, selecciona una categoría válida", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Por favor, el título es obligatorio", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener // Detiene la ejecución aquí
             }
 
-            else if (prioridad.isEmpty()) {
+            // 2. Validar Categoría de forma segura capturando el valor en una constante local
+            val categoriaId = idCategoriaSeleccionada
+            if (categoriaId == null) {
+                Toast.makeText(this, "Por favor, selecciona una categoría válida de la lista", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener // Detiene la ejecución aquí
+            }
+
+            // 3. Validar Prioridad
+            if (prioridad.isEmpty()) {
                 Toast.makeText(this, "Por favor, selecciona una prioridad", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener // Detiene la ejecución aquí
             }
-            else {
-                // 4. Construcción balanceada del objeto Entity con los tipos correctos
-                val nuevaTarea = TareaEntity(
-                    titulo = titulo,
-                    descripcion = descripcion,
-                    prioridad = prioridad,
-                    completada = false,
-                    fechaLimite = fechaSeleccionadaMilis, // Pasa el Long correctamente
-                    categoria_id = idCategoriaSeleccionada!! // Pasa el Int correctamente
-                )
 
-                // 5. Inserción mediante corrutinas en el hilo correcto
-                lifecycleScope.launch {
-                    try {
-                        database.tareasDao().insertarTarea(nuevaTarea)
-                        Toast.makeText(this@CrearTarea, "Tarea guardada con éxito", Toast.LENGTH_SHORT).show()
-                        finish() // Cierra el formulario y vuelve al menú principal
-                    } catch (e: Exception) {
-                        Toast.makeText(this@CrearTarea, "Error al guardar tarea: ${e.message}", Toast.LENGTH_LONG).show()
-                    }
+            // Si llegó aquí, los datos están 100% validados y seguros
+            val nuevaTarea = TareaEntity(
+                titulo = titulo,
+                descripcion = descripcion,
+                prioridad = prioridad,
+                completada = false,
+                fechaLimite = fechaSeleccionadaMilis,
+                categoria_id = categoriaId // Usamos la variable local segura y sin '!!'
+            )
+
+            // 5. Inserción en la Base de Datos
+            lifecycleScope.launch {
+                try {
+                    database.tareasDao().insertarTarea(nuevaTarea)
+                    Toast.makeText(this@CrearTarea, "Tarea guardada con éxito", Toast.LENGTH_SHORT).show()
+                    finish()
+                } catch (e: Exception) {
+                    Toast.makeText(this@CrearTarea, "Error al guardar tarea: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
-
     }
 
     private fun limpiarCampos() {

@@ -5,36 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="6dp"
-    android:layout_marginHorizontal="2dp"
-    app:cardCornerRadius="12dp"
+    android:layout_marginHorizontal="6dp"
+    app:cardCornerRadius="14dp"
     app:cardElevation="3dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/vEstadoIndicador"
+            android:layout_width="6dp"
+            android:layout_height="0dp"
+            android:background="#F44336"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
             android:id="@+id/tvItemTitulo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Título de la tarea"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="#2C3E50"
+            android:text="Título de la tarea"
+            app:layout_constraintStart_toEndOf="@id/vEstadoIndicador"
             app:layout_constraintEnd_toStartOf="@id/tvItemPrioridad"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tvItemDescripcion"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Descripción corta de la tarea..."
-            android:textColor="#666666"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvItemTitulo" />
 
         <TextView
             android:id="@+id/tvItemPrioridad"
@@ -43,29 +44,88 @@
             android:layout_marginEnd="12dp"
             android:text="Alta"
             android:textStyle="bold"
+            android:textSize="14sp"
             android:textColor="#E74C3C"
+            app:layout_constraintBottom_toBottomOf="@id/ivEliminarTarea"
             app:layout_constraintEnd_toStartOf="@id/ivEliminarTarea"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/ivEliminarTarea" />
 
         <ImageView
             android:id="@+id/ivEliminarTarea"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:contentDescription="Eliminar Tarea"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/tvItemDescripcion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="Descripción corta de la tarea..."
+            android:textColor="#555555"
+            android:textSize="14sp"
+            android:lineSpacingExtra="2dp"
+            app:layout_constraintStart_toStartOf="@id/tvItemTitulo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvItemTitulo" />
+
+        <View
+            android:id="@+id/vDivisor"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:background="#EAEAEA"
+            app:layout_constraintStart_toStartOf="@id/tvItemTitulo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvItemDescripcion" />
+
+        <TextView
             android:id="@+id/tvItemFecha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Fecha: --/--/----"
+            android:layout_marginTop="12dp"
+            android:text="Vence: 30/06/2026"
             android:textSize="12sp"
             android:textColor="#7F8C8D"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvItemDescripcion" />
+            app:layout_constraintStart_toStartOf="@id/tvItemTitulo"
+            app:layout_constraintTop_toBottomOf="@id/vDivisor" />
+
+        <TextView
+            android:id="@+id/tvItemEstado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="100%"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvItemFecha" />
+
+        <TextView
+            android:id="@+id/tvItemCategoria"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="14dp"
+            android:background="#F2F4F4"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:text="Estudio"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#34495E"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintStart_toStartOf="@id/tvItemTitulo"
+            app:layout_constraintTop_toBottomOf="@id/tvItemFecha"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

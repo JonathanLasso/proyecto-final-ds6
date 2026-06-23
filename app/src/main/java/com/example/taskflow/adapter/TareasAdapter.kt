@@ -1,5 +1,6 @@
 package com.example.taskflow.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +25,8 @@ class TareasAdapter(
 
     override fun onBindViewHolder(holder: TareaViewHolder, position: Int) {
         val tarea = listaTareas[position]
+
+        // Vinculación de datos existentes
         holder.binding.tvItemTitulo.text = tarea.titulo
         holder.binding.tvItemDescripcion.text = tarea.descripcion
         holder.binding.tvItemPrioridad.text = tarea.prioridad
@@ -32,7 +35,28 @@ class TareasAdapter(
         val fechaLegible = formatoFecha.format(Date(tarea.fechaLimite))
         holder.binding.tvItemFecha.text = "Vence: $fechaLegible"
 
-        // CORREGIDO: Se usa holder.binding.root para asignar el click a toda la tarjeta
+        // 1. ASIGNACIÓN DE LA CATEGORÍA (Mapeo basado en tus IDs de Room)
+        holder.binding.tvItemCategoria.text = when(tarea.categoria_id) {
+            1 -> "Categoría: Todos"
+            2 -> "Categoría: Personal"
+            3 -> "Categoría: Trabajo"
+            4 -> "Categoría: Estudio"
+            5 -> "Categoría: Compras"
+            else -> "Categoría: General"
+        }
+
+        // 2. ASIGNACIÓN DEL ESTADO Y COLOR DINÁMICO
+        if (tarea.completada || tarea.progreso == 100) {
+            holder.binding.tvItemEstado.text = "100%"
+            holder.binding.tvItemEstado.setTextColor(Color.parseColor("#4CAF50"))
+            holder.binding.vEstadoIndicador.setBackgroundColor(Color.parseColor("#4CAF50")) // Barra Verde
+        } else {
+            holder.binding.tvItemEstado.text = "${tarea.progreso}%"
+            holder.binding.tvItemEstado.setTextColor(Color.parseColor("#F44336"))
+            holder.binding.vEstadoIndicador.setBackgroundColor(Color.parseColor("#F44336")) // Barra Roja
+        }
+
+        // Evento al presionar toda la tarjeta
         holder.binding.root.setOnClickListener {
             onTareaClick(tarea)
         }
