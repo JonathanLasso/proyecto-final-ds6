@@ -2,7 +2,6 @@ package com.example.taskflow
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -139,6 +138,14 @@ class MainActivity : AppCompatActivity() {
         tareasJob = lifecycleScope.launch {
             flujoQuery.collectLatest { listaDeTareas ->
                 tareasAdapter.actualizarLista(listaDeTareas)
+                // --- CONTROL DE VISIBILIDAD DE MENSAJE VACÍO ---
+                if (listaDeTareas.isEmpty()) {
+                    binding.rvTareas.visibility = android.view.View.GONE
+                    binding.tvSinTareas.visibility = android.view.View.VISIBLE
+                } else {
+                    binding.rvTareas.visibility = android.view.View.VISIBLE
+                    binding.tvSinTareas.visibility = android.view.View.GONE
+                }
             }
         }
     }
