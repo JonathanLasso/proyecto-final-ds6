@@ -44,10 +44,8 @@ class MainActivity : AppCompatActivity() {
         binding.btnMenu.setOnClickListener { view ->
             val popup = androidx.appcompat.widget.PopupMenu(this, view)
             popup.menuInflater.inflate(R.menu.main_menu, popup.menu)
-
             popup.setOnMenuItemClickListener { item ->
                 val dao = database.tareasDao()
-
                 when (item.itemId) {
                     // IDs del submenú de Categorías
                     R.id.filtro_todos -> {

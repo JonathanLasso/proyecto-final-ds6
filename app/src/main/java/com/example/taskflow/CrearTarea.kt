@@ -1,7 +1,6 @@
 package com.example.taskflow
 
 import android.R
-import android.content.Intent
 import android.app.DatePickerDialog
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
@@ -150,23 +149,13 @@ class CrearTarea : AppCompatActivity() {
 
     private fun regresarAlMenuConFlecha(){
         binding.btnSalirFlecha.setOnClickListener {
-            val intent = Intent(
-                this,
-                MainActivity::class.java
-            )
             finish()
-            startActivity(intent)
         }
     }
 
     private fun regresarAlMenuConBoton(){
         binding.btnSalir.setOnClickListener {
-            val intent = Intent(
-                this,
-                MainActivity::class.java
-            )
             finish()
-            startActivity(intent)
         }
     }
 

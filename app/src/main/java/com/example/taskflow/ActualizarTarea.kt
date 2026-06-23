@@ -1,7 +1,6 @@
 package com.example.taskflow
 
 import android.app.DatePickerDialog
-import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.os.Bundle
@@ -31,21 +30,22 @@ class ActualizarTarea : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        // 1. Inicializar ViewBinding
         binding = ActivityActualizarTareaBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // 2. Recuperar el ID enviado desde MainActivity
+        // Recuperar el ID enviado desde MainActivity
         tareaId = intent.getIntExtra("TAREA_ID", -1)
         if (tareaId == -1) {
             Toast.makeText(this, "Error al cargar la tarea", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
-        // 3. Configurar Vista y Cargar Datos
+        // Configurar Vista y Cargar Datos
         configurarDropdownPrioridad()
         mostrarDatePicker()
         cargarDatosDeTarea()
-        // 4. Configurar Botón de Guardar Cambios
+        //Configurar la barra de progreso
+        configurarBarraProgreso()
+        // Configurar Botón de Guardar Cambios
         configurarBotonActualizar()
         // Botón salir (puedes adaptarlo a tus IDs de flechas o botones de salida)
         regresarAlMenuConBoton()
@@ -114,6 +114,9 @@ class ActualizarTarea : AppCompatActivity() {
 
                 val formato = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 binding.etFecha.setText(formato.format(Date(t.fechaLimite)))
+
+                binding.sliderProgreso.value = t.progreso.toFloat()
+                actualizarBarraProgreso(t.progreso)
             }
         }
     }
@@ -131,6 +134,8 @@ class ActualizarTarea : AppCompatActivity() {
                 Toast.makeText(this, "Selecciona una prioridad", Toast.LENGTH_SHORT).show()
             }
             else {
+                val progresoFinal = binding.sliderProgreso.value.toInt()
+                val estaCompletada = (progresoFinal == 100)
                 // Construimos la entidad manteniendo el mismo ID original para que Room sepa cuál actualizar
                 val tareaActualizada = TareaEntity(
                     id = tareaId, // CRUCIAL: Mismo ID para sobreescribir
@@ -139,7 +144,8 @@ class ActualizarTarea : AppCompatActivity() {
                     prioridad = prioridad,
                     completada = estaCompletada,
                     fechaLimite = fechaSeleccionadaMilis,
-                    categoria_id = idCategoriaOriginal
+                    categoria_id = idCategoriaOriginal,
+                    progreso = progresoFinal
                 )
 
                 lifecycleScope.launch {
@@ -155,25 +161,33 @@ class ActualizarTarea : AppCompatActivity() {
         }
     }
 
+    private fun configurarBarraProgreso(){
+        binding.sliderProgreso.addOnChangeListener { _, value, _ ->
+            actualizarBarraProgreso(value.toInt())
+        }
+    }
+
+    private fun actualizarBarraProgreso(porcentaje: Int){
+        binding.tvLabelProgreso.text = "Progreso de la Tarea: $porcentaje%"
+
+        if (porcentaje == 100) {
+            binding.tvEstadoCompletado.text = "Estado: Completado"
+            binding.tvEstadoCompletado.setTextColor(android.graphics.Color.parseColor("#4CAF50")) // Verde
+        } else {
+            binding.tvEstadoCompletado.text = "Estado: No completado"
+            binding.tvEstadoCompletado.setTextColor(android.graphics.Color.parseColor("#F44336")) // Rojo
+        }
+    }
+
     private fun regresarAlMenuConFlecha(){
         binding.btnSalirFlecha.setOnClickListener {
-            val intent = Intent(
-                this,
-                MainActivity::class.java
-            )
             finish()
-            startActivity(intent)
         }
     }
 
     private fun regresarAlMenuConBoton(){
         binding.btnSalir.setOnClickListener {
-            val intent = Intent(
-                this,
-                MainActivity::class.java
-            )
             finish()
-            startActivity(intent)
         }
     }
 }

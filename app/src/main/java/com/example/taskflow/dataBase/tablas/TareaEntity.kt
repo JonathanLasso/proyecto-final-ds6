@@ -22,5 +22,6 @@ data class TareaEntity(
     val prioridad: String,
     val completada: Boolean = false,
     val fechaLimite: Long,
-    val categoria_id: Int
+    val categoria_id: Int,
+    val progreso: Int = 0
 )
