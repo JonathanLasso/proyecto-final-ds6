@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity() {
     private val database by lazy { (application as TareaApp).database }
     private lateinit var tareasAdapter: TareasAdapter
 
+    private var tareasJob: kotlinx.coroutines.Job? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -67,31 +69,31 @@ class MainActivity : AppCompatActivity() {
     private fun mostrarOpcionesDelFiltro(anchorView: View) {
         val filtroPopup = androidx.appcompat.widget.PopupMenu(this, anchorView)
 
-        // Añadimos las opciones dinámicamente al menú
         filtroPopup.menu.add(0, 1, 0, "Por Fecha de Creación")
         filtroPopup.menu.add(0, 2, 1, "Por Prioridad")
         filtroPopup.menu.add(0, 3, 2, "Ver solo Completadas")
         filtroPopup.menu.add(0, 4, 3, "Ver solo Pendientes")
 
         filtroPopup.setOnMenuItemClickListener { filtroItem ->
+            val dao = database.tareasDao()
             when (filtroItem.itemId) {
                 1 -> {
-                    // TODO: Lógica para ordenar por fecha (ej. viewModel.ordenarPorFecha())
+                    obtenerTareas(dao.obtenerTareasPorFecha())
                     Toast.makeText(this, "Ordenado por fecha", Toast.LENGTH_SHORT).show()
                     true
                 }
                 2 -> {
-                    // TODO: Lógica para ordenar por prioridad
+                    obtenerTareas(dao.obtenerTareasPorPrioridad())
                     Toast.makeText(this, "Ordenado por prioridad", Toast.LENGTH_SHORT).show()
                     true
                 }
                 3 -> {
-                    // TODO: Filtrar completadas
+                    obtenerTareas(dao.obtenerTareasCompletadas())
                     Toast.makeText(this, "Filtrado: Completadas", Toast.LENGTH_SHORT).show()
                     true
                 }
                 4 -> {
-                    // TODO: Filtrar pendientes
+                    obtenerTareas(dao.obtenerTareasPendientes())
                     Toast.makeText(this, "Filtrado: Pendientes", Toast.LENGTH_SHORT).show()
                     true
                 }
@@ -124,11 +126,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun obtenerTareas() {
-        // Usamos lifecycleScope ya que obtenerTodasLasTareas() devuelve un Flow reactivo
-        lifecycleScope.launch {
-            database.tareasDao().obtenerTodasLasTareas().collectLatest { listaDeTareas ->
-                // Cada vez que la tabla cambie (inserciones, eliminaciones) este bloque se ejecuta solo
+    private fun obtenerTareas(flujoQuery: kotlinx.coroutines.flow.Flow<List<TareaEntity>> = database.tareasDao().obtenerTodasLasTareas()) {
+        // Cancelamos el Job anterior si el usuario cambió de filtro para evitar fugas de memoria
+        tareasJob?.cancel()
+
+        // Asignamos el nuevo Job de escucha reactiva
+        tareasJob = lifecycleScope.launch {
+            flujoQuery.collectLatest { listaDeTareas ->
                 tareasAdapter.actualizarLista(listaDeTareas)
             }
         }

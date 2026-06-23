@@ -7,20 +7,34 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TareasDao {
 
-    //Pantalla de inicio
     @Query("SELECT * FROM tareas")
     fun obtenerTodasLasTareas(): Flow<List<TareaEntity>>
-    //Consulta para obtener por id
+
+    // 1. Consulta para ordenar por fecha
+    @Query("SELECT * FROM tareas ORDER BY fechaLimite ASC")
+    fun obtenerTareasPorFecha(): Flow<List<TareaEntity>>
+
+    // 2. Consulta para ordenar por Prioridad (Modifica según cómo ordenes tus Strings)
+    @Query("SELECT * FROM tareas ORDER BY prioridad ASC")
+    fun obtenerTareasPorPrioridad(): Flow<List<TareaEntity>>
+
+    // 3. Consulta para ver solo completadas
+    @Query("SELECT * FROM tareas WHERE completada = 1")
+    fun obtenerTareasCompletadas(): Flow<List<TareaEntity>>
+
+    // 4. Consulta para ver solo pendientes
+    @Query("SELECT * FROM tareas WHERE completada = 0")
+    fun obtenerTareasPendientes(): Flow<List<TareaEntity>>
+
     @Query("SELECT * FROM tareas WHERE id = :id LIMIT 1")
     suspend fun obtenerTareaPorId(id: Int): TareaEntity?
 
-    //Pantalla de insertar
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertarTarea(tarea: TareaEntity)
-    //Pantalla de actualizar
+
     @Update
     suspend fun actualizarTarea(tarea: TareaEntity)
-    //Boton de eliminar
+
     @Delete
     suspend fun eliminarTarea(tarea: TareaEntity)
 }
