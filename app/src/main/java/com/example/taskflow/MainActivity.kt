@@ -69,32 +69,32 @@ class MainActivity : AppCompatActivity() {
     private fun mostrarOpcionesDelFiltro(anchorView: View) {
         val filtroPopup = androidx.appcompat.widget.PopupMenu(this, anchorView)
 
-        filtroPopup.menu.add(0, 1, 0, "Por Fecha de Creación")
-        filtroPopup.menu.add(0, 2, 1, "Por Prioridad")
-        filtroPopup.menu.add(0, 3, 2, "Ver solo Completadas")
-        filtroPopup.menu.add(0, 4, 3, "Ver solo Pendientes")
+        filtroPopup.menu.add(0, 1, 0, "Personal")
+        filtroPopup.menu.add(0, 2, 1, "Trabajo")
+        filtroPopup.menu.add(0, 3, 2, "Estudio")
+        filtroPopup.menu.add(0, 4, 3, "Compras")
 
         filtroPopup.setOnMenuItemClickListener { filtroItem ->
             val dao = database.tareasDao()
             when (filtroItem.itemId) {
                 1 -> {
-                    obtenerTareas(dao.obtenerTareasPorFecha())
-                    Toast.makeText(this, "Ordenado por fecha", Toast.LENGTH_SHORT).show()
+                    obtenerTareas(dao.obtenerTareasPersonal())
+                    Toast.makeText(this, "Ordenado por personal", Toast.LENGTH_SHORT).show()
                     true
                 }
                 2 -> {
-                    obtenerTareas(dao.obtenerTareasPorPrioridad())
-                    Toast.makeText(this, "Ordenado por prioridad", Toast.LENGTH_SHORT).show()
+                    obtenerTareas(dao.obtenerTareasTrabajo())
+                    Toast.makeText(this, "Ordenado por trabajo", Toast.LENGTH_SHORT).show()
                     true
                 }
                 3 -> {
-                    obtenerTareas(dao.obtenerTareasCompletadas())
-                    Toast.makeText(this, "Filtrado: Completadas", Toast.LENGTH_SHORT).show()
+                    obtenerTareas(dao.obtenerTareasEstudios())
+                    Toast.makeText(this, "Filtrado: estudio", Toast.LENGTH_SHORT).show()
                     true
                 }
                 4 -> {
-                    obtenerTareas(dao.obtenerTareasPendientes())
-                    Toast.makeText(this, "Filtrado: Pendientes", Toast.LENGTH_SHORT).show()
+                    obtenerTareas(dao.obtenerTareasCompras())
+                    Toast.makeText(this, "Filtrado: compras", Toast.LENGTH_SHORT).show()
                     true
                 }
                 else -> false
