@@ -9,8 +9,6 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.taskflow.dataBase.app.TareaApp
 import com.example.taskflow.dataBase.tablas.TareaEntity
@@ -25,7 +23,6 @@ class ActualizarTarea : AppCompatActivity() {
 
     private lateinit var binding: ActivityActualizarTareaBinding
     private val database by lazy { (application as TareaApp).database }
-
     private var tareaId: Int = -1
     private var fechaSeleccionadaMilis: Long = System.currentTimeMillis()
     private var idCategoriaOriginal: Int = 0 // Guardamos la categoría que ya tenía
@@ -34,7 +31,6 @@ class ActualizarTarea : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         // 1. Inicializar ViewBinding
         binding = ActivityActualizarTareaBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -45,26 +41,21 @@ class ActualizarTarea : AppCompatActivity() {
             finish()
             return
         }
-
         // 3. Configurar Vista y Cargar Datos
         configurarDropdownPrioridad()
         mostrarDatePicker()
         cargarDatosDeTarea()
-
         // 4. Configurar Botón de Guardar Cambios
         configurarBotonActualizar()
-
         // Botón salir (puedes adaptarlo a tus IDs de flechas o botones de salida)
         regresarAlMenuConBoton()
         regresarAlMenuConFlecha()
     }
-
     private fun configurarDropdownPrioridad() {
         val prioridades = arrayOf("Alta", "Media", "Baja")
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, prioridades)
         binding.etPrioridad.setAdapter(adapter)
     }
-
     private fun mostrarDatePicker() {
         binding.etFecha.setOnClickListener {
             val calendario = Calendar.getInstance()
@@ -96,13 +87,11 @@ class ActualizarTarea : AppCompatActivity() {
                 val c = database.categoriasDao().obtenerTodasLasCategorias()
                 Pair(t, c)
             }
-
             tarea?.let { t ->
                 // Guardamos los estados iniciales
                 idCategoriaOriginal = t.categoria_id
                 estaCompletada = t.completada
                 fechaSeleccionadaMilis = t.fechaLimite
-
                 // 2. Configurar el adaptador de categorías en el Dropdown
                 val nombresCategorias = listaCategorias.map { it.nombre }
                 val adapterCategorias = ArrayAdapter(this@ActualizarTarea, android.R.layout.simple_dropdown_item_1line, nombresCategorias)
@@ -113,13 +102,11 @@ class ActualizarTarea : AppCompatActivity() {
                 categoriaActual?.let {
                     binding.etCategoria.setText(it.nombre, false)
                 }
-
                 // 4. Escuchar si el usuario cambia la categoría en el formulario
                 binding.etCategoria.setOnItemClickListener { _, _, position, _ ->
                     val categoriaSeleccionada = listaCategorias[position]
                     idCategoriaOriginal = categoriaSeleccionada.id // Actualizamos con el nuevo ID
                 }
-
                 // 5. Llenar el resto de los campos de texto
                 binding.etTitulo.setText(t.titulo)
                 binding.etDescripcion.setText(t.descripcion)
@@ -139,31 +126,30 @@ class ActualizarTarea : AppCompatActivity() {
 
             if (titulo.isEmpty()) {
                 Toast.makeText(this, "El título es obligatorio", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
             }
-            if (prioridad.isEmpty()) {
+            else if (prioridad.isEmpty()) {
                 Toast.makeText(this, "Selecciona una prioridad", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
             }
+            else {
+                // Construimos la entidad manteniendo el mismo ID original para que Room sepa cuál actualizar
+                val tareaActualizada = TareaEntity(
+                    id = tareaId, // CRUCIAL: Mismo ID para sobreescribir
+                    titulo = titulo,
+                    descripcion = descripcion,
+                    prioridad = prioridad,
+                    completada = estaCompletada,
+                    fechaLimite = fechaSeleccionadaMilis,
+                    categoria_id = idCategoriaOriginal
+                )
 
-            // Construimos la entidad manteniendo el mismo ID original para que Room sepa cuál actualizar
-            val tareaActualizada = TareaEntity(
-                id = tareaId, // CRUCIAL: Mismo ID para sobreescribir
-                titulo = titulo,
-                descripcion = descripcion,
-                prioridad = prioridad,
-                completada = estaCompletada,
-                fechaLimite = fechaSeleccionadaMilis,
-                categoria_id = idCategoriaOriginal
-            )
-
-            lifecycleScope.launch {
-                try {
-                    database.tareasDao().actualizarTarea(tareaActualizada)
-                    Toast.makeText(this@ActualizarTarea, "Tarea actualizada con éxito", Toast.LENGTH_SHORT).show()
-                    finish() // Regresa al MainActivity
-                } catch (e: Exception) {
-                    Toast.makeText(this@ActualizarTarea, "Error al actualizar: ${e.message}", Toast.LENGTH_LONG).show()
+                lifecycleScope.launch {
+                    try {
+                        database.tareasDao().actualizarTarea(tareaActualizada)
+                        Toast.makeText(this@ActualizarTarea, "Tarea actualizada con éxito", Toast.LENGTH_SHORT).show()
+                        finish() // Regresa al MainActivity
+                    } catch (e: Exception) {
+                        Toast.makeText(this@ActualizarTarea, "Error al actualizar: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }

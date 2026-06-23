@@ -2,6 +2,7 @@ package com.example.taskflow
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -41,11 +42,12 @@ class MainActivity : AppCompatActivity() {
         binding.btnMenu.setOnClickListener { view ->
             val popup = androidx.appcompat.widget.PopupMenu(this, view)
             popup.menuInflater.inflate(R.menu.main_menu, popup.menu)
+
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.menu_categorias -> {
-                        val intent = Intent(this, CategoriaActivity::class.java)
-                        startActivity(intent)
+                        // En lugar de ir directo a otra Activity, abrimos las opciones de ordenamiento/filtro
+                        mostrarOpcionesDelFiltro(view)
                         true
                     }
                     R.id.menu_estadisticas -> {
@@ -57,6 +59,46 @@ class MainActivity : AppCompatActivity() {
             }
             popup.show()
         }
+    }
+
+    /**
+     * Despliega un segundo menú flotante con los criterios específicos de ordenamiento
+     */
+    private fun mostrarOpcionesDelFiltro(anchorView: View) {
+        val filtroPopup = androidx.appcompat.widget.PopupMenu(this, anchorView)
+
+        // Añadimos las opciones dinámicamente al menú
+        filtroPopup.menu.add(0, 1, 0, "Por Fecha de Creación")
+        filtroPopup.menu.add(0, 2, 1, "Por Prioridad")
+        filtroPopup.menu.add(0, 3, 2, "Ver solo Completadas")
+        filtroPopup.menu.add(0, 4, 3, "Ver solo Pendientes")
+
+        filtroPopup.setOnMenuItemClickListener { filtroItem ->
+            when (filtroItem.itemId) {
+                1 -> {
+                    // TODO: Lógica para ordenar por fecha (ej. viewModel.ordenarPorFecha())
+                    Toast.makeText(this, "Ordenado por fecha", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                2 -> {
+                    // TODO: Lógica para ordenar por prioridad
+                    Toast.makeText(this, "Ordenado por prioridad", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                3 -> {
+                    // TODO: Filtrar completadas
+                    Toast.makeText(this, "Filtrado: Completadas", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                4 -> {
+                    // TODO: Filtrar pendientes
+                    Toast.makeText(this, "Filtrado: Pendientes", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
+            }
+        }
+        filtroPopup.show()
     }
 
     private fun configurarLista() {
