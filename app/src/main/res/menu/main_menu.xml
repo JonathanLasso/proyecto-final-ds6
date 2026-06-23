@@ -29,4 +29,24 @@
         android:id="@+id/menu_estadisticas"
         android:icon="@drawable/ic_stats"
         android:title="Estadísticas" />
+
+    <item
+        android:id="@+id/menu_filtros"
+        android:title="Filtrar">
+
+        <menu>
+            <item
+                android:id="@+id/filtro_fecha"
+                android:title="Por Fecha" />
+            <item
+                android:id="@+id/filtro_tareas_pendientes"
+                android:title="Por tareas pendientes" />
+            <item
+                android:id="@+id/filtro_tareas_completadas"
+                android:title="Por tareas completadas" />
+            <item
+                android:id="@+id/filtro_prioridad"
+                android:title="Por prioridad" />
+        </menu>
+    </item>
 </menu>

@@ -73,10 +73,32 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this, "Filtrado: Compras", Toast.LENGTH_SHORT).show()
                         true
                     }
+                    // IDs del submenú de Filtrar
+                    R.id.filtro_fecha -> {
+                        obtenerTareas(dao.obtenerTareasPorFecha())
+                        Toast.makeText(this, "Ordenado por fecha de vencimiento", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    R.id.filtro_tareas_pendientes -> {
+                        obtenerTareas(dao.obtenerTareasPendientes())
+                        Toast.makeText(this, "Filtrado: Tareas Pendientes", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    R.id.filtro_tareas_completadas -> {
+                        obtenerTareas(dao.obtenerTareasCompletadas())
+                        Toast.makeText(this, "Filtrado: Tareas Completadas", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    R.id.filtro_prioridad -> {
+                        obtenerTareas(dao.obtenerTareasPorPrioridad())
+                        Toast.makeText(this, "Ordenado por prioridad", Toast.LENGTH_SHORT).show()
+                        true
+                    }
 
                     // Opción principal de Estadísticas
                     R.id.menu_estadisticas -> {
-                        Toast.makeText(this, "Próximamente: Estadísticas", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, CategoriaActivity::class.java)
+                        startActivity(intent)
                         true
                     }
                     else -> false
