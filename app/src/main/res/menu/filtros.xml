@@ -3,8 +3,7 @@
 
     <item
         android:id="@+id/menu_categorias"
-        android:icon="@drawable/ic_list"
-        android:title="Categorías">
+        android:title="Por Categorías">
 
         <menu>
             <item
@@ -24,15 +23,9 @@
                 android:title="Compras" />
         </menu>
     </item>
-
-    <item
-        android:id="@+id/menu_estadisticas"
-        android:icon="@drawable/ic_stats"
-        android:title="Estadísticas" />
-
     <item
         android:id="@+id/menu_filtros"
-        android:title="Filtrar">
+        android:title="Por Filtros">
 
         <menu>
             <item

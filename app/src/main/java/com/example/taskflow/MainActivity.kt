@@ -40,72 +40,79 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun configurarMenu() {
-        binding.btnMenu.setOnClickListener {
-            val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
-            val view = layoutInflater.inflate(R.layout.buttons_filter, null)
-            dialog.setContentView(view)
+        binding.btnFiltros.setOnClickListener { view ->
+            val popup = androidx.appcompat.widget.PopupMenu(this, view)
+            popup.menuInflater.inflate(R.menu.filtros, popup.menu)
+            popup.setOnMenuItemClickListener { item ->
+                val dao = database.tareasDao()
+                when (item.itemId) {
+                    // IDs del submenú de Categorías
+                    R.id.filtro_todos -> {
+                        obtenerTareas(dao.obtenerTodasLasTareas())
+                        Toast.makeText(this, "Mostrando todas las tareas", Toast.LENGTH_SHORT)
+                            .show()
+                        true
+                    }
 
-            val dao = database.tareasDao()
+                    R.id.filtro_personal -> {
+                        obtenerTareas(dao.obtenerTareasPersonal())
+                        Toast.makeText(this, "Filtrado: Personal", Toast.LENGTH_SHORT).show()
+                        true
+                    }
 
-            // --- MANEJO DE CLICS EN LOS CHIPS DE CATEGORÍAS ---
-            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipTodos)
-                .setOnClickListener {
-                    obtenerTareas(dao.obtenerTodasLasTareas())
-                    dialog.dismiss()
-                }
-            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipPersonal)
-                .setOnClickListener {
-                    obtenerTareas(dao.obtenerTareasPersonal())
-                    dialog.dismiss()
-                }
-            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipTrabajo)
-                .setOnClickListener {
-                    obtenerTareas(dao.obtenerTareasTrabajo())
-                    dialog.dismiss()
-                }
-            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipEstudio)
-                .setOnClickListener {
-                    obtenerTareas(dao.obtenerTareasEstudios())
-                    dialog.dismiss()
-                }
-            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipCompras)
-                .setOnClickListener {
-                    obtenerTareas(dao.obtenerTareasCompras())
-                    dialog.dismiss()
-                }
+                    R.id.filtro_trabajo -> {
+                        obtenerTareas(dao.obtenerTareasTrabajo())
+                        Toast.makeText(this, "Filtrado: Trabajo", Toast.LENGTH_SHORT).show()
+                        true
+                    }
 
-            // --- MANEJO DE CLICS EN ORDENAMIENTO Y ESTADOS ---
-            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipFecha)
-                .setOnClickListener {
-                    obtenerTareas(dao.obtenerTareasPorFecha())
-                    dialog.dismiss()
-                }
-            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipPrioridad)
-                .setOnClickListener {
-                    obtenerTareas(dao.obtenerTareasPorPrioridad())
-                    dialog.dismiss()
-                }
-            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipPendientes)
-                .setOnClickListener {
-                    obtenerTareas(dao.obtenerTareasPendientes())
-                    dialog.dismiss()
-                }
-            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipCompletadas)
-                .setOnClickListener {
-                    obtenerTareas(dao.obtenerTareasCompletadas())
-                    dialog.dismiss()
-                }
+                    R.id.filtro_estudio -> {
+                        obtenerTareas(dao.obtenerTareasEstudios())
+                        Toast.makeText(this, "Filtrado: Estudio", Toast.LENGTH_SHORT).show()
+                        true
+                    }
 
-            // --- BOTÓN DE ESTADÍSTICAS ---
-            view.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnVerEstadisticas)
-                .setOnClickListener {
-                    val intent = Intent(this, CategoriaActivity::class.java)
-                    startActivity(intent)
-                    dialog.dismiss()
-                }
+                    R.id.filtro_compras -> {
+                        obtenerTareas(dao.obtenerTareasCompras())
+                        Toast.makeText(this, "Filtrado: Compras", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    // IDs del submenú de Filtrar
+                    R.id.filtro_fecha -> {
+                        obtenerTareas(dao.obtenerTareasPorFecha())
+                        Toast.makeText(
+                            this,
+                            "Ordenado por fecha de vencimiento",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        true
+                    }
 
-            dialog.show()
-        }
+                    R.id.filtro_tareas_pendientes -> {
+                        obtenerTareas(dao.obtenerTareasPendientes())
+                        Toast.makeText(this, "Filtrado: Tareas Pendientes", Toast.LENGTH_SHORT)
+                            .show()
+                        true
+                    }
+
+                    R.id.filtro_tareas_completadas -> {
+                        obtenerTareas(dao.obtenerTareasCompletadas())
+                        Toast.makeText(this, "Filtrado: Tareas Completadas", Toast.LENGTH_SHORT)
+                            .show()
+                        true
+                    }
+
+                    R.id.filtro_prioridad -> {
+                        obtenerTareas(dao.obtenerTareasPorPrioridad())
+                        Toast.makeText(this, "Ordenado por prioridad", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    else -> false
+                }
+            }
+            // Muestra el menú en pantalla
+            popup.show()
+        } // <- Cierre del setOnClickListener
     }
 
     private fun configurarLista() {
@@ -167,7 +174,8 @@ class MainActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 try {
                     database.tareasDao().eliminarTarea(tarea)
-                    Toast.makeText(this@MainActivity, "Tarea eliminada", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Tarea eliminada", Toast.LENGTH_SHORT)
+                        .show()
                 } catch (e: Exception) {
                     Toast.makeText(
                         this@MainActivity,
@@ -213,7 +221,10 @@ class MainActivity : AppCompatActivity() {
         )
 
         call.enqueue(object : retrofit2.Callback<ClimaModelo> {
-            override fun onResponse(call: Call<ClimaModelo>, response: Response<ClimaModelo>) {
+            override fun onResponse(
+                call: Call<ClimaModelo>,
+                response: Response<ClimaModelo>
+            ) {
                 if (response.isSuccessful) {
                     val weatherData = response.body()
 
@@ -227,7 +238,8 @@ class MainActivity : AppCompatActivity() {
                         val codigoIcono = weather.clima.firstOrNull()?.icono
 
                         if (codigoIcono != null) {
-                            val urlIcono = "https://openweathermap.org/img/wn/$codigoIcono@2x.png"
+                            val urlIcono =
+                                "https://openweathermap.org/img/wn/$codigoIcono@2x.png"
 
                             Glide.with(this@MainActivity)
                                 .load(urlIcono)
