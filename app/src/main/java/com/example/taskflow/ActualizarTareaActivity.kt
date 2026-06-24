@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import java.util.Date
 import java.util.Locale
 
-class ActualizarTarea : AppCompatActivity() {
+class ActualizarTareaActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityActualizarTareaBinding
     private val database by lazy { (application as TareaApp).database }
@@ -94,7 +94,7 @@ class ActualizarTarea : AppCompatActivity() {
                 fechaSeleccionadaMilis = t.fechaLimite
                 // 2. Configurar el adaptador de categorías en el Dropdown
                 val nombresCategorias = listaCategorias.map { it.nombre }
-                val adapterCategorias = ArrayAdapter(this@ActualizarTarea, android.R.layout.simple_dropdown_item_1line, nombresCategorias)
+                val adapterCategorias = ArrayAdapter(this@ActualizarTareaActivity, android.R.layout.simple_dropdown_item_1line, nombresCategorias)
                 binding.etCategoria.setAdapter(adapterCategorias)
 
                 // 3. Buscar el nombre de la categoría actual de la tarea para preseleccionarla
@@ -151,10 +151,10 @@ class ActualizarTarea : AppCompatActivity() {
                 lifecycleScope.launch {
                     try {
                         database.tareasDao().actualizarTarea(tareaActualizada)
-                        Toast.makeText(this@ActualizarTarea, "Tarea actualizada con éxito", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ActualizarTareaActivity, "Tarea actualizada con éxito", Toast.LENGTH_SHORT).show()
                         finish() // Regresa al MainActivity
                     } catch (e: Exception) {
-                        Toast.makeText(this@ActualizarTarea, "Error al actualizar: ${e.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@ActualizarTareaActivity, "Error al actualizar: ${e.message}", Toast.LENGTH_LONG).show()
                     }
                 }
             }

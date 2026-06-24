@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".dataBase.app.TareaApp"
         android:allowBackup="true"
@@ -16,10 +18,10 @@
             android:name=".CategoriaActivity"
             android:exported="false" />
         <activity
-            android:name=".ActualizarTarea"
+            android:name=".ActualizarTareaActivity"
             android:exported="false" />
         <activity
-            android:name=".CrearTarea"
+            android:name=".CrearTareaActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -30,6 +32,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".EstadisticasActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

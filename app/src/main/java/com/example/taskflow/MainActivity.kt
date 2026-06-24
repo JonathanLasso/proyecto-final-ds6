@@ -36,10 +36,32 @@ class MainActivity : AppCompatActivity() {
         configurarLista()
         obtenerTareas()
         pantallaDeAgregarTarea()
+        configurarFiltros()
         configurarMenu()
     }
 
-    private fun configurarMenu() {
+    private fun configurarMenu(){
+        binding.btnMenu.setOnClickListener { view ->
+            val popup = androidx.appcompat.widget.PopupMenu(this,view)
+            popup.menuInflater.inflate(R.menu.menus_pantallas, popup.menu)
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId){
+                    R.id.menu_estadistica ->{
+                        val intent = Intent(this, EstadisticasActivity::class.java)
+                        startActivity(intent)
+                        true
+                    }
+                    R.id.menu_proximamente ->{
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
+        }
+    }
+
+    private fun configurarFiltros() {
         binding.btnFiltros.setOnClickListener { view ->
             val popup = androidx.appcompat.widget.PopupMenu(this, view)
             popup.menuInflater.inflate(R.menu.filtros, popup.menu)
@@ -121,7 +143,7 @@ class MainActivity : AppCompatActivity() {
             listaTareas = emptyList(),
             onTareaClick = { tarea ->
                 // Acción 1: Ir a la pantalla de actualizar enviando el ID o el objeto completo
-                val intent = Intent(this, ActualizarTarea::class.java).apply {
+                val intent = Intent(this, ActualizarTareaActivity::class.java).apply {
                     putExtra(
                         "TAREA_ID",
                         tarea.id
@@ -201,7 +223,7 @@ class MainActivity : AppCompatActivity() {
         btnAgregarTarea.setOnClickListener {
             val intent = Intent(
                 this,
-                CrearTarea::class.java
+                CrearTareaActivity::class.java
             )
             startActivity(intent)
         }

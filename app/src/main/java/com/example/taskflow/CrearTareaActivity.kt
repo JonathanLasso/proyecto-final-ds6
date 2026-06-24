@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
-class CrearTarea : AppCompatActivity() {
+class CrearTareaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCrearTareaBinding
     private var fechaSeleccionadaMilis: Long = System.currentTimeMillis()
     private var idCategoriaSeleccionada: Int? = null
@@ -53,7 +53,7 @@ class CrearTarea : AppCompatActivity() {
                 val nombresCategorias = listaCategorias.map { it.nombre }
 
                 withContext(Dispatchers.Main) {
-                    val adapter = ArrayAdapter(this@CrearTarea, R.layout.simple_dropdown_item_1line, nombresCategorias)
+                    val adapter = ArrayAdapter(this@CrearTareaActivity, R.layout.simple_dropdown_item_1line, nombresCategorias)
                     binding.etCategoria.setAdapter(adapter)
 
                     // Al seleccionar, buscamos el objeto real en la lista usando la posición
@@ -131,10 +131,10 @@ class CrearTarea : AppCompatActivity() {
             lifecycleScope.launch {
                 try {
                     database.tareasDao().insertarTarea(nuevaTarea)
-                    Toast.makeText(this@CrearTarea, "Tarea guardada con éxito", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@CrearTareaActivity, "Tarea guardada con éxito", Toast.LENGTH_SHORT).show()
                     finish()
                 } catch (e: Exception) {
-                    Toast.makeText(this@CrearTarea, "Error al guardar tarea: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@CrearTareaActivity, "Error al guardar tarea: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
