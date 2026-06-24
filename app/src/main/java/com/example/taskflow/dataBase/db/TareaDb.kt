@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
         CategoriasEntity::class,
         TareaEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 

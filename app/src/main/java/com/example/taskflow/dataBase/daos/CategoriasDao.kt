@@ -16,9 +16,13 @@ interface CategoriasDao {
     """)
     fun obtenerCategoriasConContador(): Flow<List<CategoriasConContador>>
 
+    // Para insertar una nueva categoria
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertarCategoria(categoria: CategoriasEntity)
+
     //Para consultar todas las categorias
     @Query("SELECT * FROM categorias")
-    suspend fun obtenerTodasLasCategorias(): List<CategoriasEntity>
+    suspend fun obtenerTodasLasCategorias(): Flow<List<CategoriasEntity>>
 
     //Para insertar categorias por defecto
     @Insert(onConflict = OnConflictStrategy.IGNORE)

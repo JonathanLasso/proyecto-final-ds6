@@ -6,7 +6,7 @@
         android:title="Estadisticas">
     </item>
     <item
-        android:id="@+id/menu_proximamente"
+        android:id="@+id/menu_categorias"
         android:title="Proximamente">
     </item>
 </menu>

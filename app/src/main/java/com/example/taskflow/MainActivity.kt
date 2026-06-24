@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tareasAdapter: TareasAdapter
 
     private var tareasJob: kotlinx.coroutines.Job? = null
+    // 🌟 NUEVO: Job para controlar la corrutina de categorías de forma limpia
+    private var categoriasJob: kotlinx.coroutines.Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         obtenerDatosDelClima()
         configurarLista()
+
+        // 🌟 NUEVO: Primero empezamos a escuchar las categorías para que el adaptador
+        // esté listo antes de que carguen las tareas.
+        observarCategorias()
         obtenerTareas()
+
         pantallaDeAgregarTarea()
         configurarFiltros()
         configurarMenu()
@@ -51,7 +58,9 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                         true
                     }
-                    R.id.menu_proximamente ->{
+                    R.id.menu_categorias ->{
+                        val intent = Intent(this, CategoriaActivity::class.java)
+                        startActivity(intent)
                         true
                     }
                     else -> false
@@ -68,14 +77,13 @@ class MainActivity : AppCompatActivity() {
             popup.setOnMenuItemClickListener { item ->
                 val dao = database.tareasDao()
                 when (item.itemId) {
-                    // IDs del submenú de Categorías
                     R.id.filtro_todos -> {
                         obtenerTareas(dao.obtenerTodasLasTareas())
-                        Toast.makeText(this, "Mostrando todas las tareas", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(this, "Mostrando todas las tareas", Toast.LENGTH_SHORT).show()
                         true
                     }
-
+                    // Nota: Si el usuario crea categorías personalizadas, tus filtros fijos del menú
+                    // seguirán funcionando para las 4 por defecto.
                     R.id.filtro_personal -> {
                         obtenerTareas(dao.obtenerTareasPersonal())
                         Toast.makeText(this, "Filtrado: Personal", Toast.LENGTH_SHORT).show()
@@ -99,28 +107,21 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this, "Filtrado: Compras", Toast.LENGTH_SHORT).show()
                         true
                     }
-                    // IDs del submenú de Filtrar
                     R.id.filtro_fecha -> {
                         obtenerTareas(dao.obtenerTareasPorFecha())
-                        Toast.makeText(
-                            this,
-                            "Ordenado por fecha de vencimiento",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this, "Ordenado por fecha de vencimiento", Toast.LENGTH_SHORT).show()
                         true
                     }
 
                     R.id.filtro_tareas_pendientes -> {
                         obtenerTareas(dao.obtenerTareasPendientes())
-                        Toast.makeText(this, "Filtrado: Tareas Pendientes", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(this, "Filtrado: Tareas Pendientes", Toast.LENGTH_SHORT).show()
                         true
                     }
 
                     R.id.filtro_tareas_completadas -> {
                         obtenerTareas(dao.obtenerTareasCompletadas())
-                        Toast.makeText(this, "Filtrado: Tareas Completadas", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(this, "Filtrado: Tareas Completadas", Toast.LENGTH_SHORT).show()
                         true
                     }
 
@@ -132,27 +133,21 @@ class MainActivity : AppCompatActivity() {
                     else -> false
                 }
             }
-            // Muestra el menú en pantalla
             popup.show()
-        } // <- Cierre del setOnClickListener
+        }
     }
 
     private fun configurarLista() {
-        // Inicializamos el adaptador pasando las acciones (lambdas)
         tareasAdapter = TareasAdapter(
             listaTareas = emptyList(),
+            listaCategorias = emptyList(), // 🌟 NUEVO: Mandamos una lista vacía inicial
             onTareaClick = { tarea ->
-                // Acción 1: Ir a la pantalla de actualizar enviando el ID o el objeto completo
                 val intent = Intent(this, ActualizarTareaActivity::class.java).apply {
-                    putExtra(
-                        "TAREA_ID",
-                        tarea.id
-                    ) // O puedes pasar más datos si tu Entidad es Serializable/Parcelable
+                    putExtra("TAREA_ID", tarea.id)
                 }
                 startActivity(intent)
             },
             onEliminarClick = { tarea ->
-                // Acción 2: Mostrar mensaje de confirmación para eliminar
                 mostrarDialogoConfirmacion(tarea)
             }
         )
@@ -163,18 +158,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // 🌟 NUEVO MÉTODO: Escucha de forma reactiva la tabla de categorías
+    private fun observarCategorias() {
+        categoriasJob?.cancel()
+        categoriasJob = lifecycleScope.launch {
+            // Asegúrate de que el método en tu dao se llame así o cámbialo por el tuyo
+            database.categoriasDao().obtenerTodasLasCategorias().collectLatest { listaDeCategorias ->
+                // Pasamos las nuevas categorías creadas al adaptador
+                tareasAdapter.actualizarCategorias(listaDeCategorias)
+            }
+        }
+    }
+
     private fun obtenerTareas(
-        flujoQuery: kotlinx.coroutines.flow.Flow<List<TareaEntity>> = database.tareasDao()
-            .obtenerTodasLasTareas()
+        flujoQuery: kotlinx.coroutines.flow.Flow<List<TareaEntity>> = database.tareasDao().obtenerTodasLasTareas()
     ) {
-        // Cancelamos el Job anterior si el usuario cambió de filtro para evitar fugas de memoria
         tareasJob?.cancel()
 
-        // Asignamos el nuevo Job de escucha reactiva
         tareasJob = lifecycleScope.launch {
             flujoQuery.collectLatest { listaDeTareas ->
+                // Llamamos a actualizar lista pasándole los datos de Room
                 tareasAdapter.actualizarLista(listaDeTareas)
-                // --- CONTROL DE VISIBILIDAD DE MENSAJE VACÍO ---
+
                 if (listaDeTareas.isEmpty()) {
                     binding.rvTareas.visibility = android.view.View.GONE
                     binding.tvSinTareas.visibility = android.view.View.VISIBLE
@@ -191,25 +196,18 @@ class MainActivity : AppCompatActivity() {
         builder.setTitle("¿Eliminar tarea?")
         builder.setMessage("¿Estás seguro de que deseas eliminar la tarea \"${tarea.titulo}\"? Esta acción no se puede deshacer.")
 
-        // Si dice que sí, borramos de la base de datos usando Corrutinas
         builder.setPositiveButton("Eliminar") { dialog, _ ->
             lifecycleScope.launch {
                 try {
                     database.tareasDao().eliminarTarea(tarea)
-                    Toast.makeText(this@MainActivity, "Tarea eliminada", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(this@MainActivity, "Tarea eliminada", Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Error al eliminar: ${e.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@MainActivity, "Error al eliminar: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
             dialog.dismiss()
         }
 
-        // Si dice que no, simplemente cerramos el mensaje
         builder.setNegativeButton("Cancelar") { dialog, _ ->
             dialog.dismiss()
         }
@@ -221,10 +219,7 @@ class MainActivity : AppCompatActivity() {
     private fun pantallaDeAgregarTarea() {
         val btnAgregarTarea = binding.AgregarTarea
         btnAgregarTarea.setOnClickListener {
-            val intent = Intent(
-                this,
-                CrearTareaActivity::class.java
-            )
+            val intent = Intent(this, CrearTareaActivity::class.java)
             startActivity(intent)
         }
     }
@@ -243,48 +238,26 @@ class MainActivity : AppCompatActivity() {
         )
 
         call.enqueue(object : retrofit2.Callback<ClimaModelo> {
-            override fun onResponse(
-                call: Call<ClimaModelo>,
-                response: Response<ClimaModelo>
-            ) {
+            override fun onResponse(call: Call<ClimaModelo>, response: Response<ClimaModelo>) {
                 if (response.isSuccessful) {
                     val weatherData = response.body()
-
-                    // 4. Cambiar el texto usando ViewBinding de forma segura
                     weatherData?.let { weather ->
                         binding.tvCityName.text = weather.nombre
-
                         binding.tvTemperature.text = "${weather.principal.temperatura} °C"
                         binding.tvHumidity.text = "Humedad: ${weather.principal.humedad}%"
-
                         val codigoIcono = weather.clima.firstOrNull()?.icono
-
                         if (codigoIcono != null) {
-                            val urlIcono =
-                                "https://openweathermap.org/img/wn/$codigoIcono@2x.png"
-
-                            Glide.with(this@MainActivity)
-                                .load(urlIcono)
-                                .into(binding.ivWeatherIcon) // <- El ID de tu ImageView
+                            val urlIcono = "https://openweathermap.org/img/wn/$codigoIcono@2x.png"
+                            Glide.with(this@MainActivity).load(urlIcono).into(binding.ivWeatherIcon)
                         }
                     }
                 } else {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Error en la respuesta del servidor",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@MainActivity, "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<ClimaModelo>, t: Throwable) {
-                // Manejar el error de conexión
-                Toast.makeText(
-                    this@MainActivity,
-                    "Fallo de conexión: ${t.message}",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
+                Toast.makeText(this@MainActivity, "Fallo de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }

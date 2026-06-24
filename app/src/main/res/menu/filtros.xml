@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_categorias"
+        android:id="@+id/filtro_categorias"
         android:title="Por Categorías">
 
         <menu>
@@ -24,7 +24,7 @@
         </menu>
     </item>
     <item
-        android:id="@+id/menu_filtros"
+        android:id="@+id/filtros"
         android:title="Por Filtros">
 
         <menu>

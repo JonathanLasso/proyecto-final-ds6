@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.taskflow.dataBase.tablas.CategoriasEntity
 import com.example.taskflow.dataBase.tablas.TareaEntity
 import com.example.taskflow.databinding.ItemTareaBinding
 import java.text.SimpleDateFormat
@@ -12,6 +13,7 @@ import java.util.Locale
 
 class TareasAdapter(
     private var listaTareas: List<TareaEntity> = emptyList(),
+    private var listaCategorias: List<CategoriasEntity> = emptyList(),
     private val onTareaClick: (TareaEntity) -> Unit,       // Listener para click normal
     private val onEliminarClick: (TareaEntity) -> Unit     // Listener para la X
 ) : RecyclerView.Adapter<TareasAdapter.TareaViewHolder>() {
@@ -36,12 +38,12 @@ class TareasAdapter(
         holder.binding.tvItemFecha.text = "Vence: $fechaLegible"
 
         // 1. ASIGNACIÓN DE LA CATEGORÍA (Mapeo basado en tus IDs de Room)
-        holder.binding.tvItemCategoria.text = when(tarea.categoria_id) {
-            1 -> "Categoría: Personal"
-            2 -> "Categoría: Trabajo"
-            3 -> "Categoría: Estudios"
-            4 -> "Categoría: Compras"
-            else -> "Categoría: General"
+        val categoriaEncontrada = listaCategorias.find { it.id == tarea.categoria_id }
+
+        holder.binding.tvItemCategoria.text = if (categoriaEncontrada != null) {
+            "Categoría: ${categoriaEncontrada.nombre}"
+        } else {
+            "Categoría: General"
         }
 
         // 2. ASIGNACIÓN DEL ESTADO Y COLOR DINÁMICO
@@ -71,5 +73,10 @@ class TareasAdapter(
     fun actualizarLista(nuevaLista: List<TareaEntity>) {
         this.listaTareas = nuevaLista
         notifyDataSetChanged()
+    }
+
+    fun actualizarCategorias(nuevasCategorias: List<CategoriasEntity>) {
+        this.listaCategorias = nuevasCategorias
+        notifyDataSetChanged() // Redibuja para buscar los nombres correctos
     }
 }
