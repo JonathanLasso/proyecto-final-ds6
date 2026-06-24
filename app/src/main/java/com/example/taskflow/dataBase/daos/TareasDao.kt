@@ -42,6 +42,9 @@ interface TareasDao {
     @Query("SELECT * FROM tareas WHERE categoria_id = 4")
     fun obtenerTareasCompras(): Flow<List<TareaEntity>>
 
+    @Query("SELECT * FROM tareas WHERE categoria_id = :id")
+    fun obtenerTareasPorCategoria(id: Int): Flow<List<TareaEntity>>
+
     @Query("SELECT * FROM tareas WHERE id = :id LIMIT 1")
     suspend fun obtenerTareaPorId(id: Int): TareaEntity?
 

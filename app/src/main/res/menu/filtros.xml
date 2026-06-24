@@ -4,23 +4,10 @@
     <item
         android:id="@+id/filtro_categorias"
         android:title="Por Categorías">
-
         <menu>
             <item
                 android:id="@+id/filtro_todos"
                 android:title="Todos" />
-            <item
-                android:id="@+id/filtro_personal"
-                android:title="Personal" />
-            <item
-                android:id="@+id/filtro_trabajo"
-                android:title="Trabajo" />
-            <item
-                android:id="@+id/filtro_estudio"
-                android:title="Estudio" />
-            <item
-                android:id="@+id/filtro_compras"
-                android:title="Compras" />
         </menu>
     </item>
     <item
