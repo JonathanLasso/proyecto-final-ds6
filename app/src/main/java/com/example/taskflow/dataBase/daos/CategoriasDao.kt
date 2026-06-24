@@ -20,6 +20,10 @@ interface CategoriasDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertarCategoria(categoria: CategoriasEntity)
 
+    // Para borrar una categoria
+    @Delete
+    suspend fun eliminarCategoria(categoria: CategoriasEntity)
+
     //Para consultar todas las categorias
     @Query("SELECT * FROM categorias")
     fun obtenerTodasLasCategorias(): Flow<List<CategoriasEntity>>
