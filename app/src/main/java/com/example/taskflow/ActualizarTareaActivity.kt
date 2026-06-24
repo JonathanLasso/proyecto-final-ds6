@@ -15,6 +15,7 @@ import com.example.taskflow.databinding.ActivityActualizarTareaBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.first
 import java.util.Date
 import java.util.Locale
 
@@ -81,18 +82,21 @@ class ActualizarTareaActivity : AppCompatActivity() {
 
     private fun cargarDatosDeTarea() {
         lifecycleScope.launch {
-            // 1. Obtener la tarea y la lista de categorías en paralelo/hilo IO
+            // 1. Obtener la tarea y el primer listado del Flow en paralelo
             val (tarea, listaCategorias) = withContext(Dispatchers.IO) {
                 val t = database.tareasDao().obtenerTareaPorId(tareaId)
-                val c = database.categoriasDao().obtenerTodasLasCategorias()
+                // 🌟 CAMBIO AQUÍ: Añadimos .first() para obtener la List<CategoriasEntity> actual del Flow
+                val c = database.categoriasDao().obtenerTodasLasCategorias().first()
                 Pair(t, c)
             }
+
             tarea?.let { t ->
                 // Guardamos los estados iniciales
                 idCategoriaOriginal = t.categoria_id
                 estaCompletada = t.completada
                 fechaSeleccionadaMilis = t.fechaLimite
-                // 2. Configurar el adaptador de categorías en el Dropdown
+
+                // 2. Configurar el adaptador de categorías en el Dropdown (¡Ya funcionará el map!)
                 val nombresCategorias = listaCategorias.map { it.nombre }
                 val adapterCategorias = ArrayAdapter(this@ActualizarTareaActivity, android.R.layout.simple_dropdown_item_1line, nombresCategorias)
                 binding.etCategoria.setAdapter(adapterCategorias)
@@ -102,11 +106,13 @@ class ActualizarTareaActivity : AppCompatActivity() {
                 categoriaActual?.let {
                     binding.etCategoria.setText(it.nombre, false)
                 }
+
                 // 4. Escuchar si el usuario cambia la categoría en el formulario
                 binding.etCategoria.setOnItemClickListener { _, _, position, _ ->
                     val categoriaSeleccionada = listaCategorias[position]
                     idCategoriaOriginal = categoriaSeleccionada.id // Actualizamos con el nuevo ID
                 }
+
                 // 5. Llenar el resto de los campos de texto
                 binding.etTitulo.setText(t.titulo)
                 binding.etDescripcion.setText(t.descripcion)

@@ -46,7 +46,7 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/btnVolver"
         app:layout_constraintTop_toBottomOf="@id/layoutAgregar"
-        tools:listitem="@layout/item_categoria_card" />
+        tools:listitem="@layout/item_categoria" />
 
     <Button
         android:id="@+id/btnVolver"

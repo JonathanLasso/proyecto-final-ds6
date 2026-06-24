@@ -22,7 +22,7 @@ interface CategoriasDao {
 
     //Para consultar todas las categorias
     @Query("SELECT * FROM categorias")
-    suspend fun obtenerTodasLasCategorias(): Flow<List<CategoriasEntity>>
+    fun obtenerTodasLasCategorias(): Flow<List<CategoriasEntity>>
 
     //Para insertar categorias por defecto
     @Insert(onConflict = OnConflictStrategy.IGNORE)

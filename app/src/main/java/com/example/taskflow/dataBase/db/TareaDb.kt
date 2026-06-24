@@ -12,6 +12,7 @@ import com.example.taskflow.dataBase.daos.EstadisticasDao
 import com.example.taskflow.dataBase.daos.TareasDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @Database(
@@ -22,7 +23,6 @@ import kotlinx.coroutines.launch
     version = 2,
     exportSchema = false
 )
-
 abstract class TareaDb : RoomDatabase() {
     abstract fun categoriasDao(): CategoriasDao
     abstract fun tareasDao(): TareasDao
@@ -39,7 +39,8 @@ abstract class TareaDb : RoomDatabase() {
                     TareaDb::class.java,
                     "tarea_database"
                 )
-                    .addCallback(TaskFlowDatabaseCallback(scope)) // Callback para precargar datos
+                    .fallbackToDestructiveMigration()
+                    .addCallback(TaskFlowDatabaseCallback(scope, context)) // 🌟 Pasamos el context
                     .build()
                 INSTANCE = instance
                 instance
@@ -47,16 +48,21 @@ abstract class TareaDb : RoomDatabase() {
         }
     }
 
-    // Callback para rellenar de forma automática las categorías del Wireframe 4
     private class TaskFlowDatabaseCallback(
-        private val scope: CoroutineScope
+        private val scope: CoroutineScope,
+        private val context: Context
     ) : Callback() {
-        override fun onCreate(db: SupportSQLiteDatabase) {
-            super.onCreate(db)
-            INSTANCE?.let { database ->
-                scope.launch(Dispatchers.IO) {
-                    val dao = database.categoriasDao()
-                    // Crear la lista basada en tus bloques temáticos
+
+        override fun onOpen(db: SupportSQLiteDatabase) {
+            super.onOpen(db)
+
+            scope.launch(Dispatchers.IO) {
+                val database = getDatabase(context, scope)
+                val dao = database.categoriasDao()
+
+                // 🌟 VALIDACIÓN: Solo insertamos si la tabla de categorías está completamente vacía
+                val categoriasExistentes = dao.obtenerTodasLasCategorias().first()
+                if (categoriasExistentes.isEmpty()) {
                     val categoriasPorDefecto = listOf(
                         CategoriasEntity(nombre = "Personal"),
                         CategoriasEntity(nombre = "Trabajo"),

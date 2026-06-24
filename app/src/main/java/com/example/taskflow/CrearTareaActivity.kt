@@ -14,6 +14,7 @@ import com.example.taskflow.dataBase.tablas.CategoriasEntity
 import com.example.taskflow.dataBase.tablas.TareaEntity
 import com.example.taskflow.databinding.ActivityCrearTareaBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
@@ -46,10 +47,10 @@ class CrearTareaActivity : AppCompatActivity() {
     private fun cargarCategoriasDesdeBaseDeDatos() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // LEER DIRECTAMENTE DE ROOM: Traemos las categorías reales insertadas por tu Callback
-                listaCategorias = database.categoriasDao().obtenerTodasLasCategorias()
+                // 🌟 CORREGIDO: Agregamos .first() para extraer la lista desde el Flow de Room
+                listaCategorias = database.categoriasDao().obtenerTodasLasCategorias().first()
 
-                // Mapeamos la lista de entidades para extraer únicamente los nombres (Strings)
+                // Mapeamos la lista de entidades para extraer únicamente los nombres
                 val nombresCategorias = listaCategorias.map { it.nombre }
 
                 withContext(Dispatchers.Main) {
