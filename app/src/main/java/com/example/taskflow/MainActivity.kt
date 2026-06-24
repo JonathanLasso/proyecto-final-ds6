@@ -40,80 +40,71 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun configurarMenu() {
-        binding.btnMenu.setOnClickListener { view ->
-            val popup = androidx.appcompat.widget.PopupMenu(this, view)
-            popup.menuInflater.inflate(R.menu.main_menu, popup.menu)
+        binding.btnMenu.setOnClickListener {
+            val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
+            val view = layoutInflater.inflate(R.layout.buttons_filter, null)
+            dialog.setContentView(view)
 
-            try {
-                val fields = popup.javaClass.declaredFields
-                for (field in fields) {
-                    if ("mPopup" == field.name) {
-                        field.isAccessible = true
-                        val menuPopupHelper = field.get(popup)
-                        val classPopupHelper = Class.forName(menuPopupHelper.javaClass.name)
-                        val setForceShowIcon = classPopupHelper.getMethod("setForceShowIcon", Boolean::class.javaPrimitiveType)
-                        setForceShowIcon.invoke(menuPopupHelper, true)
-                        break
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            val dao = database.tareasDao()
 
-            popup.setOnMenuItemClickListener { item ->
-                val dao = database.tareasDao()
-                when (item.itemId) {
-                    // IDs del submenú de Categorías
-                    R.id.filtro_todos -> {
-                        obtenerTareas(dao.obtenerTodasLasTareas())
-                        Toast.makeText(this, "Mostrando todas las tareas", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    R.id.filtro_personal -> {
-                        obtenerTareas(dao.obtenerTareasPersonal())
-                        Toast.makeText(this, "Filtrado: Personal", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    R.id.filtro_trabajo -> {
-                        obtenerTareas(dao.obtenerTareasTrabajo())
-                        Toast.makeText(this, "Filtrado: Trabajo", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    R.id.filtro_estudio -> {
-                        obtenerTareas(dao.obtenerTareasEstudios())
-                        Toast.makeText(this, "Filtrado: Estudio", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    R.id.filtro_compras -> {
-                        obtenerTareas(dao.obtenerTareasCompras())
-                        Toast.makeText(this, "Filtrado: Compras", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    // IDs del submenú de Filtrar
-                    R.id.filtro_fecha -> {
-                        obtenerTareas(dao.obtenerTareasPorFecha())
-                        Toast.makeText(this, "Ordenado por fecha de vencimiento", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    R.id.filtro_tareas_pendientes -> {
-                        obtenerTareas(dao.obtenerTareasPendientes())
-                        Toast.makeText(this, "Filtrado: Tareas Pendientes", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    R.id.filtro_tareas_completadas -> {
-                        obtenerTareas(dao.obtenerTareasCompletadas())
-                        Toast.makeText(this, "Filtrado: Tareas Completadas", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    R.id.filtro_prioridad -> {
-                        obtenerTareas(dao.obtenerTareasPorPrioridad())
-                        Toast.makeText(this, "Ordenado por prioridad", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    else -> false
+            // --- MANEJO DE CLICS EN LOS CHIPS DE CATEGORÍAS ---
+            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipTodos)
+                .setOnClickListener {
+                    obtenerTareas(dao.obtenerTodasLasTareas())
+                    dialog.dismiss()
                 }
-            }
-            popup.show()
+            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipPersonal)
+                .setOnClickListener {
+                    obtenerTareas(dao.obtenerTareasPersonal())
+                    dialog.dismiss()
+                }
+            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipTrabajo)
+                .setOnClickListener {
+                    obtenerTareas(dao.obtenerTareasTrabajo())
+                    dialog.dismiss()
+                }
+            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipEstudio)
+                .setOnClickListener {
+                    obtenerTareas(dao.obtenerTareasEstudios())
+                    dialog.dismiss()
+                }
+            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipCompras)
+                .setOnClickListener {
+                    obtenerTareas(dao.obtenerTareasCompras())
+                    dialog.dismiss()
+                }
+
+            // --- MANEJO DE CLICS EN ORDENAMIENTO Y ESTADOS ---
+            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipFecha)
+                .setOnClickListener {
+                    obtenerTareas(dao.obtenerTareasPorFecha())
+                    dialog.dismiss()
+                }
+            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipPrioridad)
+                .setOnClickListener {
+                    obtenerTareas(dao.obtenerTareasPorPrioridad())
+                    dialog.dismiss()
+                }
+            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipPendientes)
+                .setOnClickListener {
+                    obtenerTareas(dao.obtenerTareasPendientes())
+                    dialog.dismiss()
+                }
+            view.findViewById<com.google.android.material.chip.Chip>(R.id.chipCompletadas)
+                .setOnClickListener {
+                    obtenerTareas(dao.obtenerTareasCompletadas())
+                    dialog.dismiss()
+                }
+
+            // --- BOTÓN DE ESTADÍSTICAS ---
+            view.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnVerEstadisticas)
+                .setOnClickListener {
+                    val intent = Intent(this, CategoriaActivity::class.java)
+                    startActivity(intent)
+                    dialog.dismiss()
+                }
+
+            dialog.show()
         }
     }
 
@@ -124,7 +115,10 @@ class MainActivity : AppCompatActivity() {
             onTareaClick = { tarea ->
                 // Acción 1: Ir a la pantalla de actualizar enviando el ID o el objeto completo
                 val intent = Intent(this, ActualizarTarea::class.java).apply {
-                    putExtra("TAREA_ID", tarea.id) // O puedes pasar más datos si tu Entidad es Serializable/Parcelable
+                    putExtra(
+                        "TAREA_ID",
+                        tarea.id
+                    ) // O puedes pasar más datos si tu Entidad es Serializable/Parcelable
                 }
                 startActivity(intent)
             },
@@ -140,7 +134,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun obtenerTareas(flujoQuery: kotlinx.coroutines.flow.Flow<List<TareaEntity>> = database.tareasDao().obtenerTodasLasTareas()) {
+    private fun obtenerTareas(
+        flujoQuery: kotlinx.coroutines.flow.Flow<List<TareaEntity>> = database.tareasDao()
+            .obtenerTodasLasTareas()
+    ) {
         // Cancelamos el Job anterior si el usuario cambió de filtro para evitar fugas de memoria
         tareasJob?.cancel()
 
@@ -172,7 +169,11 @@ class MainActivity : AppCompatActivity() {
                     database.tareasDao().eliminarTarea(tarea)
                     Toast.makeText(this@MainActivity, "Tarea eliminada", Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
-                    Toast.makeText(this@MainActivity, "Error al eliminar: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Error al eliminar: ${e.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
             dialog.dismiss()
@@ -205,7 +206,11 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         val apiService = retrofit.create(ClimaApi::class.java)
-        val call = apiService.obtenerElTiempoActual("Ciudad de Panamá", "588a8259c8ffb569bdd98d4db4d50e3c", "metric")
+        val call = apiService.obtenerElTiempoActual(
+            "Ciudad de Panamá",
+            "588a8259c8ffb569bdd98d4db4d50e3c",
+            "metric"
+        )
 
         call.enqueue(object : retrofit2.Callback<ClimaModelo> {
             override fun onResponse(call: Call<ClimaModelo>, response: Response<ClimaModelo>) {
@@ -230,13 +235,22 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    Toast.makeText(this@MainActivity, "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Error en la respuesta del servidor",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
             override fun onFailure(call: Call<ClimaModelo>, t: Throwable) {
                 // Manejar el error de conexión
-                Toast.makeText(this@MainActivity, "Fallo de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@MainActivity,
+                    "Fallo de conexión: ${t.message}",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
             }
         })
     }
