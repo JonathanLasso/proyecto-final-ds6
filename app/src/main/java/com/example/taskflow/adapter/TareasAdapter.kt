@@ -37,11 +37,10 @@ class TareasAdapter(
 
         // 1. ASIGNACIÓN DE LA CATEGORÍA (Mapeo basado en tus IDs de Room)
         holder.binding.tvItemCategoria.text = when(tarea.categoria_id) {
-            1 -> "Categoría: Todos"
-            2 -> "Categoría: Personal"
-            3 -> "Categoría: Trabajo"
-            4 -> "Categoría: Estudio"
-            5 -> "Categoría: Compras"
+            1 -> "Categoría: Personal"
+            2 -> "Categoría: Trabajo"
+            3 -> "Categoría: Estudios"
+            4 -> "Categoría: Compras"
             else -> "Categoría: General"
         }
 

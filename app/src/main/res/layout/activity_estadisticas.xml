@@ -1,212 +1,250 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E1EBF5"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="12dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Estadísticas"
-            android:textColor="#A0AAB0"
-            android:textSize="28sp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="20dp" />
-
-        <FrameLayout
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="24dp">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/circule_progress"
-                android:alpha="0.2" />
-
-            <ProgressBar
-                android:id="@+id/circular_progress_bar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:indeterminate="false"
-                android:max="100"
-                android:progress="0"
-                android:progressDrawable="@drawable/circule_progress" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="#0D232E"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp"
+            app:cardPreventCornerOverlap="true">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="24dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="PROGRESO"
+                    android:text="Estadísticas"
                     android:textColor="#A0AAB0"
-                    android:textSize="12sp" />
+                    android:textSize="28sp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <FrameLayout
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/circule_progress"
+                        android:alpha="0.15" />
+
+                    <ProgressBar
+                        android:id="@+id/circular_progress_bar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/circule_progress" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="PROGRESO"
+                            android:textColor="#A0AAB0"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_progreso_porcentaje"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0%"
+                            android:textColor="#FFFFFF"
+                            android:textSize="32sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </FrameLayout>
 
                 <TextView
-                    android:id="@+id/tv_progreso_porcentaje"
+                    android:id="@+id/tv_tareas_completadas_total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0%"
+                    android:layout_gravity="center"
+                    android:text="TAREAS COMPLETADAS: 0"
                     android:textColor="#FFFFFF"
-                    android:textSize="28sp"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="16dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categorías / Cantidad"
+                    android:textColor="#8A959C"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="14dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.3"
+                        android:text="Personal"
+                        android:textColor="#A0AAB0"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/tv_cant_personal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.2"
+                        android:text="0 Tareas"
+                        android:textColor="#67737A"
+                        android:textSize="16sp" />
+                    <View
+                        android:id="@+id/bar_personal"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_weight="0.01"
+                        android:background="#208FA5"
+                        android:visibility="invisible" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="14dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.3"
+                        android:text="Trabajo"
+                        android:textColor="#A0AAB0"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/tv_cant_trabajo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.2"
+                        android:text="0 Tareas"
+                        android:textColor="#67737A"
+                        android:textSize="16sp" />
+                    <View
+                        android:id="@+id/bar_trabajo"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_weight="0.01"
+                        android:background="#208FA5"
+                        android:visibility="invisible" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="14dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.3"
+                        android:text="Estudios"
+                        android:textColor="#A0AAB0"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/tv_cant_estudios"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.2"
+                        android:text="0 Tareas"
+                        android:textColor="#67737A"
+                        android:textSize="16sp" />
+                    <View
+                        android:id="@+id/bar_estudios"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_weight="0.01"
+                        android:background="#208FA5"
+                        android:visibility="invisible" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.3"
+                        android:text="Compras"
+                        android:textColor="#A0AAB0"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/tv_cant_compras"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.2"
+                        android:text="0 Tareas"
+                        android:textColor="#67737A"
+                        android:textSize="16sp" />
+                    <View
+                        android:id="@+id/bar_compras"
+                        android:layout_width="0dp"
+                        android:layout_height="14dp"
+                        android:layout_weight="0.01"
+                        android:background="#208FA5"
+                        android:visibility="invisible" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.2" />
+
+                <Button
+                    android:id="@+id/btn_volver"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:backgroundTint="#1D8296"
+                    android:text="VOLVER"
+                    android:textColor="#0D232E"
                     android:textStyle="bold" />
+
             </LinearLayout>
-        </FrameLayout>
-
-        <TextView
-            android:id="@+id/tv_tareas_completadas_total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="TAREAS COMPLETADAS: 0"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:layout_marginBottom="20dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Categorías / Cantidad"
-            android:textColor="#8A959C"
-            android:textSize="14sp"
-            android:layout_marginBottom="8dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="6dp">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:text="Personal"
-                android:textColor="#A0AAB0" />
-            <TextView
-                android:id="@+id/tv_cant_personal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2"
-                android:text="0 Tareas"
-                android:textColor="#67737A" />
-            <View
-                android:id="@+id/bar_personal"
-                android:layout_width="0dp"
-                android:layout_height="12dp"
-                android:layout_weight="0.01"
-                android:background="#208FA5"
-                android:visibility="invisible" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="6dp">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:text="Trabajo"
-                android:textColor="#A0AAB0" />
-            <TextView
-                android:id="@+id/tv_cant_trabajo"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2"
-                android:text="0 Tareas"
-                android:textColor="#67737A" />
-            <View
-                android:id="@+id/bar_trabajo"
-                android:layout_width="0dp"
-                android:layout_height="12dp"
-                android:layout_weight="0.01"
-                android:background="#208FA5"
-                android:visibility="invisible" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="6dp">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:text="Estudios"
-                android:textColor="#A0AAB0" />
-            <TextView
-                android:id="@+id/tv_cant_estudios"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2"
-                android:text="0 Tareas"
-                android:textColor="#67737A" />
-            <View
-                android:id="@+id/bar_estudios"
-                android:layout_width="0dp"
-                android:layout_height="12dp"
-                android:layout_weight="0.01"
-                android:background="#208FA5"
-                android:visibility="invisible" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="24dp">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:text="Compras"
-                android:textColor="#A0AAB0" />
-            <TextView
-                android:id="@+id/tv_cant_compras"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.2"
-                android:text="0 Tareas"
-                android:textColor="#67737A" />
-            <View
-                android:id="@+id/bar_compras"
-                android:layout_width="0dp"
-                android:layout_height="12dp"
-                android:layout_weight="0.01"
-                android:background="#208FA5"
-                android:visibility="invisible" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/btn_volver"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#1D8296"
-            android:text="VOLVER"
-            android:textColor="#0D232E"
-            android:textStyle="bold" />
-
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>
