@@ -79,13 +79,10 @@ class MainActivity : AppCompatActivity() {
             val popup = androidx.appcompat.widget.PopupMenu(this, view)
             popup.menuInflater.inflate(R.menu.filtros, popup.menu)
 
-            // 1. Accedemos al submenú de categorías
+            // Accedemos al submenú de categorías
             val subMenuCategorias = popup.menu.findItem(R.id.filtro_categorias).subMenu
 
-            // 2. Agregamos la opción "Todos" manualmente
-            subMenuCategorias?.add(Menu.NONE, R.id.filtro_todos, Menu.NONE, "Todos")
-
-            // 3. Agregamos las categorías dinámicas de la BD
+            // Agregamos las categorías dinámicas de la BD
             listaCategoriasGlobal.forEach { categoria ->
                 subMenuCategorias?.add(Menu.NONE, categoria.id.toInt(), Menu.NONE, categoria.nombre)
             }
