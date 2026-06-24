@@ -15,39 +15,20 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tituloApp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                android:id="@+id/tituloApp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TaskFlow"
-                android:textColor="#102027"
-                android:textSize="32sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:id="@+id/btnMenu"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_more_vert_dark"
-                app:layout_constraintBottom_toBottomOf="@id/tituloApp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tituloApp"
-                android:contentDescription="Opciones" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginBottom="16dp"
+            android:text="TaskFlow"
+            android:textColor="#102027"
+            android:textSize="32sp"
+            android:textStyle="bold" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="16dp"
             app:cardBackgroundColor="#2C3E50"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp">
@@ -104,6 +85,22 @@
 
         </androidx.cardview.widget.CardView>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:text="Filtrar tareas"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:backgroundTint="#2C3E50"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/icono_filtros"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:iconTint="#FFFFFF" />
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -125,7 +122,8 @@
                 android:textColor="#757575"
                 android:textSize="18sp"
                 android:textStyle="italic"
-                android:visibility="gone" tools:visibility="visible" />
+                android:visibility="gone"
+                tools:visibility="visible" />
 
         </FrameLayout>
 

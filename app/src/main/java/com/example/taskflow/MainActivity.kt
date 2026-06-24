@@ -43,6 +43,23 @@ class MainActivity : AppCompatActivity() {
         binding.btnMenu.setOnClickListener { view ->
             val popup = androidx.appcompat.widget.PopupMenu(this, view)
             popup.menuInflater.inflate(R.menu.main_menu, popup.menu)
+
+            try {
+                val fields = popup.javaClass.declaredFields
+                for (field in fields) {
+                    if ("mPopup" == field.name) {
+                        field.isAccessible = true
+                        val menuPopupHelper = field.get(popup)
+                        val classPopupHelper = Class.forName(menuPopupHelper.javaClass.name)
+                        val setForceShowIcon = classPopupHelper.getMethod("setForceShowIcon", Boolean::class.javaPrimitiveType)
+                        setForceShowIcon.invoke(menuPopupHelper, true)
+                        break
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
             popup.setOnMenuItemClickListener { item ->
                 val dao = database.tareasDao()
                 when (item.itemId) {
@@ -91,13 +108,6 @@ class MainActivity : AppCompatActivity() {
                     R.id.filtro_prioridad -> {
                         obtenerTareas(dao.obtenerTareasPorPrioridad())
                         Toast.makeText(this, "Ordenado por prioridad", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-
-                    // Opción principal de Estadísticas
-                    R.id.menu_estadisticas -> {
-                        val intent = Intent(this, CategoriaActivity::class.java)
-                        startActivity(intent)
                         true
                     }
                     else -> false
